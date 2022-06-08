@@ -8,8 +8,11 @@ if (typeof window === 'object') {
   window.wax_login = wax_login;
   window.wax_transact = wax_transact;
   window.toast = toast;
-  window.appendiFrame = appendiFrame;
+  window.appendiFrame = () => {};
   window.__autoScriptHandlers = [];
+  window.setGameName = (name) => {
+    window.gameName = name;
+  };
   toast('脚本加载中!', getNow());
 
   if (process.env.NODE_ENV === 'development') {

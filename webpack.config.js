@@ -20,7 +20,7 @@ module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
     diggerswgame: './src/script/main.js',
-    farmersworld: './src/farmersworld/main.js'
+    script: './src/script/main.js'
   },
   resolve: {
     extensions: ['.js'],

@@ -9,9 +9,11 @@ import * as waxjs from '@waxio/waxjs/dist';
 window.mywax = new waxjs.WaxJS({
   rpcEndpoint: 'https://diggersworld-wax-rpc.global.binfra.one'
 });
-appendiFrame({
-  collection_name: 'diggersworld'
-});
+setTimeout(() => {
+  appendiFrame({
+    collection_name: 'diggersworld'
+  });
+}, 2000);
 toast('进行登录。。。');
 
 wax_login();

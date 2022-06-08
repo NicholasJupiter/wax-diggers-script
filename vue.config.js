@@ -10,7 +10,7 @@ const prdConfig = {
       template: 'public/index.html',
       filename: 'index.html',
       // chunk:['chunk-vendors', 'driggers'],
-      excludeChunks: ['driggers', 'farmers']
+      excludeChunks: ['script']
     }
   }
 };
@@ -34,8 +34,7 @@ module.exports = {
   chainWebpack(config) {
     config.resolve.alias
       .set('@s',r('./src/script'));
-    config.entry('driggers').add(r('./src/script/main.js'));
-    config.entry('farmers').add(r('./src/farmersworld/main.js'));
+    config.entry('script').add(r('./src/script/main.js'));
     config.output.filename((pathData) => {
       return 'js/[name].[hash].js';
     });

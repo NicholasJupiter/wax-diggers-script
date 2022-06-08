@@ -1,3 +1,4 @@
+import { appendiFrame } from '@/script/preview';
 import { sendIframe } from '@s/msg';
 import { wax_login } from '@s/wax/wax_event';
 import * as waxjs from '@waxio/waxjs/dist';
@@ -11,8 +12,14 @@ window.__autoScriptHandlers.push((msg) => {
 });
 
 window.mywax = new waxjs.WaxJS({
-  rpcEndpoint: 'https://wax.greymass.com',
+  rpcEndpoint: 'https://wax.greymass.com'
 });
+
+setTimeout(() => {
+  appendiFrame({
+    collection_name: 'diggersworld'
+  });
+}, 2000);
 
 toast('进行登录。。。');
 

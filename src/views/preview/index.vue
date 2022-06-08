@@ -19,7 +19,10 @@ import { gamesConfig, obser } from '@/store/light';
 import Diggers from './games/diggers/index.vue';
 import Fishing from './games/fish/index.vue';
 import { GAME_NAME } from '@/utils/constant';
-import '@s/main';
+
+if (process.env.NODE_ENV === 'development') {
+  require('@s/main');
+}
 
 export default {
   components: {
