@@ -1,0 +1,18 @@
+.table-preview{
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #EBEEF5;
+  &:hover{
+    box-shadow: 0 0 10px rgba($color: #ccc, $alpha: .5);
+  }
+  >.table-header{
+    display: flex;
+    align-items: center;
+    >h2{
+      font-size: 20px;
+    }
+    >.operation{
+      margin-left: auto;
+    }
+  }
+}

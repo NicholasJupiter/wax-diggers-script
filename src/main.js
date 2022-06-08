@@ -8,6 +8,15 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.config.productionTip = false;
 
+Vue.prototype.$mergeForm = function (baseForm, form) {
+  Object.keys(baseForm).forEach((key) => {
+    if (form[key] !== undefined) {
+      this.$set(baseForm, key, form[key]);
+      // baseForm[key] = form[key];
+    }
+  });
+};
+
 Vue.prototype.$stime = function (time) {
   const now = moment();
   const next = moment(time);
@@ -18,16 +27,13 @@ Vue.prototype.$stime = function (time) {
 
   let text = `${hh}:${mm}:${ss}`;
 
-  let zero = false; // 倒计时结束
-  if (now.unix() >= next.unix()) {
-    zero = true;
-  }
+  let zero = now.unix() >= next.unix(); // 倒计时结束
 
   return {
     hh,
     mm,
     ss,
-    text,
+    text: zero ? '00:00:00' : text,
     zero
   };
 };

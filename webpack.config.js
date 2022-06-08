@@ -27,6 +27,7 @@ module.exports = {
     alias: {
       '@waxio/waxjs': path.resolve(__dirname, 'node_modules/@waxio/waxjs'),
       '@': path.resolve(__dirname, 'src/'),
+      '@s': path.resolve(__dirname, 'src/script'),
       src: path.resolve(__dirname, 'src/'),
       node_modules: path.resolve(__dirname, 'node_modules/')
     }

@@ -39,12 +39,12 @@ const iframeStyle = `.waxinfo {
 /**
  * 添加iframe
  */
-export async function appendiFrame(tables) {
+export function appendiFrame(params) {
   // const path = 'http://localhost:5000/#/preview?waxname=';
   if (!window.mywax || !window.mywax.userAccount) {
     console.log('未检测到登录!');
     setTimeout(() => {
-      appendiFrame(tables);
+      appendiFrame(params);
     }, 10000);
     return;
   }
@@ -52,12 +52,16 @@ export async function appendiFrame(tables) {
   let src =
     process.env.iframeUrl +
     queryParams({
+      ...params,
       waxname: window.mywax.userAccount,
-      tables,
       gamename: window.gameName
     });
-  $('body').append(`
 
+  if (process.env.NODE_ENV === 'development') {
+    console.log('开发环境, src=', src, params);
+    return;
+  }
+  $('body').append(`
         <style>${iframeStyle}</style>
         <div class="waxinfo open" id="wax-info">
           <button onclick="openiFrame()">打开</button>

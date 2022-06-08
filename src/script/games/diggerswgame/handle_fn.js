@@ -1,9 +1,9 @@
-import { getPasses } from './wax/table_row';
-import { Comm } from './wax/transact/comm';
-import Tools from './wax/transact/tools';
+import { getPasses } from './table_row';
+import { Comm } from './transact/comm';
+import Tools from './transact/tools';
 import { getNow } from '@/utils/time';
-import { wax_transact } from './wax/wax_event';
-import { toast } from './toast';
+import { wax_transact } from '@s/wax/wax_event';
+import { toast } from '@s/toast';
 
 /**
  * 工具
@@ -32,7 +32,7 @@ export async function repir(rows, isMine) {
     return await comm.repir(rows);
   }
   const passes = await getPasses(account);
-  const { repirType } = window.waxConfig;
+  const { repirType } = window.gamesConfig.diggers;
   // 选择mine之前维修
   if (repirType === 1) {
     toast('执行维修');

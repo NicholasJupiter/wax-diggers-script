@@ -3,28 +3,6 @@ import axios from '@/http/wax.js';
 const talbeBaseUrl = 'https://chain.wax.io/v1/chain/get_table_rows';
 
 /**
- * 获取wax运行资源
- * @param {string} waxName
- * @returns
- */
-// export async function GetWaxTableRows(waxName, table, scope) {
-//   return await axios.post(talbeBaseUrl, {
-//     code: scope,
-//     index_position: 2,
-//     json: true,
-//     key_type: 'i64',
-//     limit: 100,
-//     lower_bound: waxName,
-//     reverse: false,
-//     scope: scope,
-//     show_payer: false,
-//     table: table,
-//     table_key: '',
-//     upper_bound: waxName
-//   });
-// }
-
-/**
  * 获取wax table_row资源
  * @param {object} rowData
  * @returns

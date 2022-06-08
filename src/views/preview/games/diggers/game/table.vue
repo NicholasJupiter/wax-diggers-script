@@ -4,7 +4,7 @@
       <div class="account-name">
         <div>
           自动运行:
-          <el-switch v-model="obser.waxConfig.isOpen" :active-value="1" :inactive-value="0" />
+          <el-switch v-model="gamesConfig.diggers.isOpen" :active-value="1" :inactive-value="0" />
         </div>
 
         <div class="right">
@@ -21,7 +21,7 @@
       <div class="setting">
         <div class="repir">
           维修方式:
-          <el-radio-group v-model="obser.waxConfig.repirType">
+          <el-radio-group v-model="gamesConfig.diggers.repirType">
             <el-radio :label="0">耐久度到0执行</el-radio>
             <el-radio :label="1">Mine之前执行</el-radio>
           </el-radio-group>
@@ -55,9 +55,8 @@ export default {
     this.init();
   },
   watch: {
-    'obser.waxConfig': {
+    gamesConfig: {
       handler(val) {
-        localStorage.setItem('waxConfig', JSON.stringify(val));
         this.queryAssetsByName();
       },
       deep: true
@@ -94,12 +93,12 @@ export default {
      */
     async getTableTools() {
       this.loading = true;
-      const { waxname, tables, gamename } = this.obser;
-      for (const table of tables.split(',')) {
+      const { owner, tables, gamename } = this.obser;
+      for (const table of ['tools']) {
         await GetWaxTableRows({
-          lower_bound: waxname,
+          lower_bound: owner,
           index_position: 2,
-          upper_bound: waxname,
+          upper_bound: owner,
           table,
           scope: gamename,
           code: gamename
@@ -132,15 +131,14 @@ export default {
           for (const row of tableRows[key].rows) {
             const timeObj = this.$stime((row.next_availability || row.next_mine) * 1000);
             this.$set(row, 'zero', timeObj.zero);
+            this.$set(row, 'stime', timeObj.text);
             if (timeObj.zero) {
-              this.$set(row, 'stime', '00:00:00');
               this.setMines(mines, key, row);
             } else {
-              this.$set(row, 'stime', timeObj.text);
             }
           }
         }
-        if (Object.keys(mines).length && this.obser.waxConfig.isOpen) {
+        if (Object.keys(mines).length && this.gamesConfig.diggers.isOpen) {
           this.sendMessage({
             type: 'run',
             data: mines

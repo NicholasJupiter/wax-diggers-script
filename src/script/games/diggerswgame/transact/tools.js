@@ -1,4 +1,4 @@
-import { wax_transact } from '../wax_event';
+import { wax_transact } from '@s/wax/wax_event';
 import { Comm } from './comm';
 
 /**

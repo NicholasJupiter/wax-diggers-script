@@ -1,50 +1,39 @@
-import * as waxjs from '@waxio/waxjs/dist';
 import { appendiFrame } from './preview';
-import { ExecRun } from './handle';
 import { getNow } from '@/utils/time';
-import { wax_login } from './wax/wax_event';
-import { sendIframe } from './msg';
+import { wax_login, wax_transact } from './wax/wax_event';
 import { toast } from './toast/index';
+import { getQueryString } from '@/utils/util';
 
 if (typeof window === 'object') {
+  window.wax_login = wax_login;
+  window.wax_transact = wax_transact;
   window.toast = toast;
-  console.log('script 加载成功!', new Date());
+  window.appendiFrame = appendiFrame;
+  window.__autoScriptHandlers = [];
+  toast('脚本加载中!', getNow());
+
+  if (process.env.NODE_ENV === 'development') {
+    window.gameName = getQueryString('gamename');
+  }
+
   window.addEventListener('load', () => {
-    toast('加载脚本中!');
-    console.log('init wax');
-    // new wax
-    window.mywax = new waxjs.WaxJS({
-      rpcEndpoint: 'https://diggersworld-wax-rpc.global.binfra.one'
-    });
     console.log(process.env, 'env');
-    if (process.env.NODE_ENV === 'production') {
-      try {
-        setTimeout(() => {
-          toast('进行登录!');
-          wax_login();
-        }, 5000);
-      } catch (error) {}
+    console.log('name', window.gameName);
+    if (window.gameName) {
+      require(`./games/${window.gameName}/index.js`);
     }
   });
 
-  // 设置游戏名称
-  window.setGameName = (name) => {
-    window.gameName = name;
-  };
-  window.appendiFrame = appendiFrame;
   window.addEventListener('message', async (msg) => {
-    const { type, __script } = msg.data;
+    if (typeof msg.data !== 'object') return;
+    const { type, __script, gamesConfig } = msg.data;
     if (type && __script) {
       console.log('script:接受消息', msg.data, getNow());
-      switch (type) {
-        case 'run':
-          await ExecRun(msg.data);
+      if (!window.gameName) {
+        window.gameName = getQueryString('gamename');
       }
-      setTimeout(() => {
-        sendIframe({
-          type: 'reload'
-        });
-      }, 5000);
+      window.gamesConfig = gamesConfig || {};
+      window.__autoScriptHandlers.forEach((v) => v(msg.data));
     }
   });
 }

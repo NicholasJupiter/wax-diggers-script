@@ -1,8 +1,9 @@
-import { obser } from '@/store/light.js';
+import { gamesConfig, obser } from '@/store/light.js';
 export default {
   data() {
     return {
-      obser
+      obser,
+      gamesConfig
     };
   },
   methods: {
@@ -16,9 +17,7 @@ export default {
      * @param {any} msg 消息
      */
     sendMessage(msg) {
-      const { waxConfig } = this.obser;
-      // if (!waxConfig.isOpen) return;
-      const data = { __script: true, ...msg, waxConfig: { ...waxConfig } };
+      const data = { __script: true, ...msg, gamesConfig: { ...gamesConfig } };
       console.log('send message....', data);
       try {
         window.postMessage(data, '*');
