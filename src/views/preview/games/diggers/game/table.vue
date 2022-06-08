@@ -4,7 +4,7 @@
       <div class="account-name">
         <div>
           自动运行:
-          <el-switch v-model="gamesConfig.diggers.isOpen" :active-value="1" :inactive-value="0" />
+          <el-switch v-model="gamesConfig.diggers.isOpen" />
         </div>
 
         <div class="right">
