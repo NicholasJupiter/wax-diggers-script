@@ -24,7 +24,7 @@ const prdConfig = {
 // }
 
 module.exports = {
-  outputDir: 'dist/diggerswgame-iframe',
+  outputDir: 'dist/games-iframe',
   publicPath: './',
   productionSourceMap: false,
   configureWebpack: {
