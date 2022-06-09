@@ -30,16 +30,11 @@ class Comm {
       transaction.actions.push({
         account: this.gameName,
         name: 'resetenegy',
-        authorization: [
-          {
-            actor: row.account,
-            permission: 'active'
-          }
-        ],
+        authorization: this.authorization,
         data: {
           asset_id: row.asset_id,
-          asset_owner: row.account,
-          owner: row.account
+          asset_owner: this.account,
+          owner: this.account
         }
       });
     }
