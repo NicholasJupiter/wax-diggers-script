@@ -72,11 +72,6 @@ export default {
       }
       this.handleSubs.push(this.queryAssetsByName);
       this.queryAssetsByName();
-
-      // 5分钟总定时器
-      setInterval(() => {
-        this.queryAssetsByName();
-      }, 1000 * 60 * 5);
     },
 
     /**

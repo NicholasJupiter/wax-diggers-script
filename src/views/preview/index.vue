@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import { gamesConfig, obser } from '@/store/light';
+import { gamesConfig, handleSubs, obser } from '@/store/light';
 import Diggers from './games/diggers/index.vue';
 import Fishing from './games/fish/index.vue';
 import { GAME_NAME } from '@/utils/constant';
@@ -74,8 +74,16 @@ export default {
       location.reload();
       return;
     }
+    this.globalTimeout();
   },
   methods: {
+    globalTimeout() {
+      // 5分钟总定时器
+      setTimeout(() => {
+        handleSubs.forEach((sub) => sub());
+        this.globalTimeout();
+      }, 1000 * 60 * 5);
+    },
     // 复制名称
     copyName() {
       if (this.obser.owner) {
