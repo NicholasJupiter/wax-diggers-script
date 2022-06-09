@@ -29,7 +29,7 @@ class Comm {
     for (const row of rows) {
       transaction.actions.push({
         account: this.gameName,
-        name: 'trepair',
+        name: 'resetenegy',
         authorization: [
           {
             actor: row.account,
@@ -38,7 +38,8 @@ class Comm {
         ],
         data: {
           asset_id: row.asset_id,
-          asset_owner: row.account
+          asset_owner: row.account,
+          owner: row.account
         }
       });
     }
@@ -47,25 +48,20 @@ class Comm {
 
   /**
    * 所有维修
-   * @param {array} rows
+   * @param {object} row
    * @returns
    */
-  async repirAll(rows) {
+  async repirAll(row) {
     const transaction = {
       actions: [
         {
           account: this.gameName,
-          name: 'repairall',
-          authorization: [
-            {
-              actor: this.account,
-              permission: 'active'
-            }
-          ],
+          name: 'resetenegy',
+          authorization: this.authorization,
           data: {
             asset_owner: this.account,
             owner: this.account,
-            asset_ids: rows.map((v) => v.asset_id)
+            asset_ids: row.asset_id
           }
         }
       ]

@@ -7,39 +7,35 @@ import { Comm } from './comm';
  */
 export default class Tools extends Comm {
   rows = [];
-  constructor(_rows) {
+  constructor() {
     super();
-    this.rows = _rows;
   }
   /**
    * 执行操作
-   * @param {string} fisher_id 鱼的id
-   * @param {number} bonus_asset_id 0 不知道是什么
+   * @param {object} rows
    */
-    mine(fisher_id, bonus_asset_id = 0) {
+  mine(row) {
     const transaction = {
       actions: []
     };
-    for (const row of this.rows) {
-      transaction.actions.push({
-        account: this.gameName,
-        name: 'fishing',
-        authorization: [
-          {
-            actor: this.account,
-            permission: 'active'
-          }
-        ],
-        data: {
-          asset_id: row.asset_id,
-          bonus_asset_id,
-          fisher_id,
-          // asset_owner: this.account,
-          // owner: this.account,
-          fishername: this.account
+    transaction.actions.push({
+      account: this.gameName,
+      name: 'fishing',
+      authorization: [
+        {
+          actor: this.account,
+          permission: 'active'
         }
-      });
-    }
+      ],
+      data: {
+        asset_id: row.asset_id,
+        bonus_asset_id: row.bonus_asset_id || 0,
+        fisher_id: row.fisher_id,
+        // asset_owner: this.account,
+        // owner: this.account,
+        fishername: this.account
+      }
+    });
     return wax_transact(transaction);
   }
 }
