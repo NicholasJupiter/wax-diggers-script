@@ -17,14 +17,17 @@ export async function tools(rows) {
   for (const row of rows) {
     if (fishersRet.rows.length) {
       row.fisher_id = fishersRet.rows[0].asset_id;
+      if (!row.enegy) {
+        await repir([row]);
+      }
       const mineRet = await tools.mine(row);
       if (!mineRet.success) {
         toast('执行失败！');
         console.log('执行失败！', mineRet);
         // 需要维修
-        if (mineRet.message.includes('estimated CPU time (0 us)')) {
-          await repir([row]);
-        }
+        // if (mineRet.message.includes('estimated CPU time (0 us)')) {
+        //   await repir([row]);
+        // }
         // 安装鱼饵
         if (mineRet.message.includes('You must install the bait')) {
           await stakeBait();
@@ -65,12 +68,10 @@ export function buyBait() {
   return bait.buy(Number(buyBaitAmount), buyBaitId);
 }
 
-
-
 /**
  * 维修
  * @param {array} row s
- * @returns 
+ * @returns
  */
 export function repir(rows) {
   toast('进行维修');

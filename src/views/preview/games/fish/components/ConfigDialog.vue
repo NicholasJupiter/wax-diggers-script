@@ -1,21 +1,21 @@
 <template>
   <div class="config-dialog">
-    <el-dialog title="提示" :visible.sync="selfVisible" width="700px">
+    <el-dialog title="脚本配置" :visible.sync="selfVisible" width="700px">
       <el-form label-width="100px">
         <el-form-item label="使用鱼饵">
           <el-radio-group v-model="config.useBaitId">
-            <el-radio :label="1000"
-              ><img src="@/assets/imgs/coin/coin_fslf.png" />蓝色（普通 FSLF）</el-radio
-            >
-            <el-radio :label="1001"
-              ><img src="@/assets/imgs/coin/coin_fsls.png" />蓝色（普通 FSLS）</el-radio
-            >
-            <el-radio :label="1002"
-              ><img src="@/assets/imgs/coin/coin_fslf.png" />绿色（稀有 FSLF）</el-radio
-            >
-            <el-radio :label="1003"
-              ><img src="@/assets/imgs/coin/coin_fsls.png" />绿色（稀有 FSLS）</el-radio
-            >
+            <el-radio :label="1000">
+              <img src="@/assets/imgs/coin/coin_fslf.png" />蓝色（普通 FSLF）
+            </el-radio>
+            <el-radio :label="1001">
+              <img src="@/assets/imgs/coin/coin_fsls.png" />蓝色（普通 FSLS）
+            </el-radio>
+            <el-radio :label="1002">
+              <img src="@/assets/imgs/coin/coin_fslf.png" />绿色（稀有 FSLF）
+            </el-radio>
+            <el-radio :label="1003">
+              <img src="@/assets/imgs/coin/coin_fsls.png" />绿色（稀有 FSLS）
+            </el-radio>
           </el-radio-group>
           <el-input
             size="small"
@@ -43,8 +43,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="selfVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirm">确 定</el-button>
+        <el-button size="small" @click="selfVisible = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="confirm">确 定</el-button>
       </span>
     </el-dialog>
   </div>

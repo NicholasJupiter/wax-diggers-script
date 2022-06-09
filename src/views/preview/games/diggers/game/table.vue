@@ -36,6 +36,7 @@ import WaxItem from '@/components/wax-item/index.vue';
 import { GetWaxTableRows, GetAllProp } from '@/wax/table_row';
 import TableRowMixins from '@/mixins/tableRow.js';
 import { handleSubs } from '@/store/light';
+import { getDifferenceTime } from '@/utils/time';
 
 export default {
   name: 'GameTable',
@@ -124,12 +125,11 @@ export default {
         const mines = {};
         for (const key of Object.keys(tableRows)) {
           for (const row of tableRows[key].rows) {
-            const timeObj = this.$stime((row.next_availability || row.next_mine) * 1000);
-            this.$set(row, 'zero', timeObj.zero);
-            this.$set(row, 'stime', timeObj.text);
-            if (timeObj.zero) {
+            const { zero, text } = getDifferenceTime(row.next_mine * 1000);
+            this.$set(row, 'zero', zero);
+            this.$set(row, 'nextTimeText', text);
+            if (zero) {
               this.setMines(mines, key, row);
-            } else {
             }
           }
         }

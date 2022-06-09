@@ -3,9 +3,9 @@ import { GetWaxTableRows } from '@/wax/table_row';
 
 /**
  * table操作
- * @param {*} table 
- * @param {*} _owner 
- * @returns 
+ * @param {*} table
+ * @param {*} _owner
+ * @returns
  */
 function waxTableRows(table, _owner) {
   const { owner, gamename } = obser;
@@ -29,15 +29,31 @@ function waxTableRows(table, _owner) {
  * @returns
  */
 export async function getToolsByToolId(asset_id) {
-  const ret = waxTableRows('tools', asset_id);
-  return ret;
+  return waxTableRows('tools', asset_id);
 }
 
 /**
  * 查询用户
  * @returns {object} { tools:[] }
  */
-export async function getAccounts() {
-  const ret = await waxTableRows('accounts');
-  return ret;
+export function getAccounts() {
+  return waxTableRows('accounts');
+}
+
+/**
+ * 获取用户背包的鱼饵
+ */
+export function getUserBaits() {
+  return waxTableRows('baits');
+}
+
+/**
+ * 获取使用中的鱼饵
+ */
+export async function getInUseBait() {
+  const ret = await waxTableRows('fisherbaits');
+  if (ret.rows.length) {
+    return ret.rows[0];
+  }
+  return null;
 }

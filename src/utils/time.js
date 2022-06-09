@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 // 睡觉
 export function sleep(time = 0) {
   return new Promise((res) =>
@@ -39,18 +41,29 @@ export function getNow() {
  * @returns
  */
 export function getDifferenceTime(nextTime) {
-  let nowTime = Date.now(); //获取当前时间对应的毫秒数
-  let eightTime = new Date(nextTime).getTime(); //获取八点对应的毫秒数
-  let differenceTime = nowTime - eightTime;
-  if (differenceTime <= 0) {
-    return '00:00:00';
-  } else {
-    let diffDate = new Date(differenceTime - 8 * 60 * 60 * 1000);
-    let hours = diffDate.getHours();
-    let minutes = diffDate.getMinutes();
-    let seconds = diffDate.getSeconds();
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
-      .toString()
-      .padStart(2, '0')}`;
-  }
+  const now = moment();
+  const next = moment(nextTime);
+  const diff = moment.duration(next - now);
+  const hh = diff.hours(),
+    mm = diff.minutes(),
+    ss = diff.seconds();
+
+  let text = `${padStartZero(hh)}:${padStartZero(mm)}:${padStartZero(ss)}`;
+  let zero = now.unix() >= next.unix(); // 倒计时结束
+  return {
+    hh,
+    mm,
+    ss,
+    text: zero ? '00:00:00' : text,
+    zero
+  };
+}
+
+/**
+ * 往前补0
+ * @param {*} str
+ * @returns
+ */
+export function padStartZero(str) {
+  return String(str).padStart(2, '0');
 }

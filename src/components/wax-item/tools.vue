@@ -6,7 +6,7 @@
       <!-- <el-table-column label="AssetId" prop="asset_id"> </el-table-column> -->
       <el-table-column label="名称" prop="template_name"> </el-table-column>
       <el-table-column label="类型" prop="type"> </el-table-column>
-      <el-table-column label="剩余时间" prop="stime"> </el-table-column>
+      <el-table-column label="剩余时间" prop="nextTimeText"> </el-table-column>
       <el-table-column label="耐久度">
         <span slot-scope="{ row }"> {{ row.init_durability }}/{{ row.durability }} </span>
       </el-table-column>

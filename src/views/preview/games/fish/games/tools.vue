@@ -13,17 +13,27 @@
       <!-- <el-table-column label="AssetId" prop="asset_id"> </el-table-column> -->
       <!-- <el-table-column label="名称" prop="template_name"> </el-table-column>
       <el-table-column label="类型" prop="type"> </el-table-column> -->
-      <el-table-column label="剩余时间" prop="stime"> </el-table-column>
+      <el-table-column label="冷却倒计时" prop="nextTimeText"> </el-table-column>
+      <el-table-column label="重置体力倒计时">
+        <span
+          slot-scope="{ row }"
+          :style="{
+            color: row.resetEnergyZero ? '#67C23A' : '#F56C6C'
+          }"
+        >
+          {{ row.resetEnergyTimeText }}
+        </span>
+      </el-table-column>
       <el-table-column label="耐久度">
         <span slot-scope="{ row }"> {{ row.max_enegy }}/{{ row.enegy }} </span>
       </el-table-column>
       <el-table-column label="操作">
         <div slot-scope="{ row }">
           <el-button type="text" @click="mine(row)" :disabled="!row.zero"> 执行 </el-button>
-          <!-- <el-button type="text" @click="repir(row)" :disabled="row.max_enegy === row.enegy">
+          <el-button type="text" @click="repir(row)" :disabled="disabledRepir(row)">
             维修
           </el-button>
-          <el-button type="text" @click="unstake(row)" :disabled="unstakeDisable(row)">
+          <!-- <el-button type="text" @click="unstake(row)" :disabled="unstakeDisable(row)">
             卸下
           </el-button> -->
         </div>
@@ -35,6 +45,7 @@
 import { handleSubs, obser } from '@/store/light';
 import { getAccounts, getToolsByToolId } from '../api/table';
 import TableRowMixins from '@/mixins/tableRow.js';
+import { getDifferenceTime } from '@/utils/time';
 export default {
   name: 'ToolsTable',
   data() {
@@ -52,6 +63,12 @@ export default {
     handleSubs.push(this.getAccounts);
   },
   methods: {
+    // 禁用维修
+    disabledRepir(row) {
+      const { enegy, resetEnergyZero } = row;
+      if (!resetEnergyZero) return true;
+      return !!enegy;
+    },
     unstakeDisable() {
       return true;
     },
@@ -65,7 +82,12 @@ export default {
       });
     },
     // 维修
-    repir(row) {},
+    repir(row) {
+      this.sendMessage({
+        type: 'run',
+        data: { repir: [row] }
+      });
+    },
     /**
      * 获取用户信息
      */
@@ -106,10 +128,13 @@ export default {
       this.updateStimeInter = setTimeout(() => {
         const mines = {};
         for (const row of rows) {
-          const timeObj = this.$stime(row.next_availability * 1000);
-          this.$set(row, 'zero', timeObj.zero);
-          this.$set(row, 'stime', timeObj.text);
-          if (timeObj.zero) {
+          const { zero, text } = getDifferenceTime(row.next_availability * 1000);
+          const resetEnegy = getDifferenceTime(row.reset_enegy_nextime * 1000);
+          this.$set(row, 'nextTimeZero', zero);
+          this.$set(row, 'nextTimeText', text);
+          this.$set(row, 'resetEnergyZero', resetEnegy.zero);
+          this.$set(row, 'resetEnergyTimeText', resetEnegy.text);
+          if (zero && resetEnegy.zero) {
             this.setMines(mines, 'tools', row);
           }
         }
