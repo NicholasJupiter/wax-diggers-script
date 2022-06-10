@@ -1,6 +1,6 @@
 import { toast } from '@/script/toast';
 import { sleep } from '@/utils/time';
-import { getFishers } from './table_row';
+import { getFishers, getInUseBaits } from './table_row';
 import { Bait } from './transact/bait';
 import { Comm } from './transact/comm';
 import Tools from './transact/tools';
@@ -19,6 +19,11 @@ export async function tools(rows) {
       row.fisher_id = fishersRet.rows[0].asset_id;
       if (!row.enegy) {
         await repir([row]);
+      }
+      const inUseBaits = await getInUseBaits();
+      // 需要安装鱼饵
+      if (!inUseBaits || !inUseBaits.bait_amount) {
+        await stakeBait();
       }
       const mineRet = await tools.mine(row);
       if (!mineRet.success) {
@@ -70,7 +75,7 @@ export function buyBait() {
 
 /**
  * 维修
- * @param {array} row s
+ * @param {array} row
  * @returns
  */
 export function repir(rows) {

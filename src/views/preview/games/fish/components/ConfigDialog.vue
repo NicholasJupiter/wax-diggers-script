@@ -1,6 +1,6 @@
 <template>
   <div class="config-dialog">
-    <el-dialog title="脚本配置" :visible.sync="selfVisible" width="700px">
+    <el-dialog title="脚本配置" :visible.sync="selfVisible" width="80%">
       <el-form label-width="100px">
         <el-form-item label="使用鱼饵">
           <el-radio-group v-model="config.useBaitId">

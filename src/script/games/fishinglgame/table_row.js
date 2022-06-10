@@ -38,3 +38,15 @@ export function getFishers() {
 export function getBaits() {
   return waxTableRows('baits');
 }
+
+/**
+ * 获取安装中的鱼饵
+ * @returns
+ */
+export async function getInUseBaits() {
+  const ret = await waxTableRows('fisherbaits');
+  if (ret.rows.length) {
+    return ret.rows[0];
+  }
+  return null;
+}

@@ -50,7 +50,7 @@ export function getUserBaits() {
 /**
  * 获取使用中的鱼饵
  */
-export async function getInUseBait() {
+export async function getInUseBaits() {
   const ret = await waxTableRows('fisherbaits');
   if (ret.rows.length) {
     return ret.rows[0];

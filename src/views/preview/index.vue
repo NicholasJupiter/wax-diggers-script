@@ -68,9 +68,9 @@ export default {
     });
     this.obser.owner = this.$route.query.waxname;
     if (!this.obser.owner) {
-      location.href += '?waxname=j4vym.wam&gamename=diggerswgame&collection_name=diggersworld';
+      // location.href += '?waxname=j4vym.wam&gamename=diggerswgame&collection_name=diggersworld';
 
-      // location.href += '?waxname=j4vym.wam&gamename=fishinglgame&collection_name=fishinglands';
+      location.href += '?waxname=j4vym.wam&gamename=fishinglgame&collection_name=fishinglands';
       location.reload();
       return;
     }
@@ -103,6 +103,7 @@ export default {
 .preview {
   padding: 16px;
   max-width: 900px;
+  width: 100%;
   margin: 0 auto;
   .empty-account {
     text-align: center;

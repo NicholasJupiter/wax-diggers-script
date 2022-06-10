@@ -32,7 +32,7 @@
   </div>
 </template>
 <script>
-import { getInUseBait, getUserBaits } from '../../api/table';
+import { getInUseBaits, getUserBaits } from '../../api/table';
 export default {
   name: 'Baits',
   data() {
@@ -76,7 +76,7 @@ export default {
     async _getUserBaits() {
       const ret = await getUserBaits();
       if (ret.rows.length && ret.rows[0].baits.length) {
-        const useRet = await getInUseBait();
+        const useRet = await getInUseBaits();
         const { baits, amount } = ret.rows[0];
         for (let i = 0; i < baits.length; i++) {
           const row = this.rows.find((v) => v.baitId === baits[i]);

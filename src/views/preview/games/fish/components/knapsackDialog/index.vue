@@ -1,7 +1,7 @@
 <template>
   <!-- 背包弹窗 -->
   <div class="knapsack-dialog">
-    <el-dialog title="背包" :visible.sync="selfVisible" width="800px">
+    <el-dialog title="背包" :visible.sync="selfVisible" width="80%">
       <el-tabs v-model="activeName" type="card">
         <el-tab-pane label="鱼饵(BAITS)" name="0">
           <Baits></Baits>
