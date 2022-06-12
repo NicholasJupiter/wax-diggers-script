@@ -68,9 +68,9 @@ export default {
     });
     this.obser.owner = this.$route.query.waxname;
     if (!this.obser.gamename) {
-      // location.href += '?waxname=j4vym.wam&gamename=diggerswgame&collection_name=diggersworld';
-
-      location.href += '?waxname=j4vym.wam&gamename=fishinglgame&collection_name=fishinglands';
+      location.href += '?waxname=j4vym.wam&gamename=diggerswgame&collection_name=diggersworld';
+      // location.href += '?waxname=j4vym.wam&gamename=fishinglgame&collection_name=fishinglands';
+      
       location.reload();
       return;
     }

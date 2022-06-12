@@ -41,22 +41,23 @@
   </div>
 </template>
 <script>
-import { GetWaxTableRows, GetAllProp } from '@/wax/table_row';
-import TableRowMixins from '@/mixins/tableRow.js';
-import { handleSubs } from '@/store/light';
+import { GetWaxTableRows } from '@/wax/table_row';
+import { handleSubs, obser, gamesConfig } from '@/store/light';
 import { getDifferenceTime } from '@/utils/time';
+import { GetAllProp } from '../api/table';
+import { sendMessage } from '@/utils/util';
 
 export default {
   name: 'GameTable',
   components: {},
-  mixins: [TableRowMixins],
   data() {
     return {
+      obser,
+      gamesConfig,
       handleSubs,
       loading: false,
       updateStimeInter: null, // 更新时间的定时器
       loading: false,
-
       tableRows: [] // 表格数据
     };
   },
@@ -87,7 +88,7 @@ export default {
      * @param {object} row
      */
     repir(row) {
-      this.sendMessage({
+      sendMessage({
         type: 'run',
         data: { repir: [row] }
       });
@@ -96,17 +97,13 @@ export default {
      * 卸下
      */
     unstake(row) {
-      this.sendMessage({
+      sendMessage({
         type: 'run',
         data: { unstake: [row] }
       });
     },
     // 初始化
     async init() {
-      const allProp = await GetAllProp(this.obser.gamename);
-      if (allProp) {
-        this.obser.allProp.push(...allProp);
-      }
       this.handleSubs.push(this.queryAssetsByName);
       this.queryAssetsByName();
     },
@@ -121,11 +118,24 @@ export default {
     },
 
     /**
+     * 查询所有工具
+     */
+    async queryProps() {
+      const allProp = await GetAllProp(this.obser.gamename);
+      if (allProp) {
+        this.obser.games.diggers.allProp.push(...allProp);
+      }
+    },
+    /**
      * 获取工具, 用来显示
      */
     async getTableTools() {
       this.loading = true;
       const { owner, gamename } = this.obser;
+      // 没有查询过所有工具
+      if (!this.obser.games.diggers.allProp.length) {
+        await this.queryProps();
+      }
       await GetWaxTableRows({
         lower_bound: owner,
         index_position: 2,
@@ -134,8 +144,10 @@ export default {
         scope: gamename,
         code: gamename
       }).then((res) => {
-        if (res.rows.length) {
-          res.rows.forEach((row) => {
+        const { rows } = res;
+        if (rows.length) {
+          console.log(rows);
+          rows.forEach((row) => {
             const rowProp = this.getRowProp(row.template_id);
             if (rowProp) {
               const { __name, init_durability } = rowProp;
@@ -143,9 +155,10 @@ export default {
               row.init_durability = init_durability;
             }
           });
+          rows.sort((v, n) => (v.template_id > n.template_id ? -1 : 0));
         }
-        console.log('tools 查询结果:', res.rows);
-        this.tableRows = res.rows;
+        console.log('tools 查询结果:', rows);
+        this.tableRows = rows;
       });
       this.loading = false;
     },
@@ -166,7 +179,7 @@ export default {
           }
         }
         if (mines.length && this.gamesConfig.diggers.isOpen) {
-          this.sendMessage({
+          sendMessage({
             type: 'run',
             data: { tools: mines }
           });
@@ -174,6 +187,11 @@ export default {
         }
         this.updatestime();
       }, 1000);
+    },
+
+    // 获取参数
+    getRowProp(template_id) {
+      return this.obser.games.diggers.allProp.find((item) => item.template_id == template_id);
     },
 
     /**
@@ -184,8 +202,7 @@ export default {
       for (const row of this.tableRows) {
         mines.push(row);
       }
-
-      this.sendMessage({
+      sendMessage({
         type: 'run',
         data: { tools: mines }
       });
@@ -193,5 +210,4 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

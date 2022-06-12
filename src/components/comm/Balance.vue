@@ -8,7 +8,7 @@
         type="text"
         icon="el-icon-refresh"
       >
-        刷新数据
+        刷新
       </el-button>
       <el-button type="text" size="mini" @click="visible = true">划转</el-button>
     </div>

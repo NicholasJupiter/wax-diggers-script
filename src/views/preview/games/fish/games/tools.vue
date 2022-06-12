@@ -29,7 +29,13 @@
       </el-table-column>
       <el-table-column label="操作">
         <div slot-scope="{ row }">
-          <el-button type="text" @click="mine(row)" :disabled="!row.nextTimeZero || !row.resetEnergyZero || !row.enegy"> 执行 </el-button>
+          <el-button
+            type="text"
+            @click="mine(row)"
+            :disabled="!row.nextTimeZero || !row.resetEnergyZero || !row.enegy"
+          >
+            执行
+          </el-button>
           <el-button type="text" @click="repir(row)" :disabled="disabledRepir(row)">
             维修
           </el-button>
@@ -44,8 +50,8 @@
 <script>
 import { handleSubs, obser } from '@/store/light';
 import { getAccounts, getToolsByToolId } from '../api/table';
-import TableRowMixins from '@/mixins/tableRow.js';
 import { getDifferenceTime } from '@/utils/time';
+import { sendMessage } from '@/utils/util';
 export default {
   name: 'ToolsTable',
   data() {
@@ -57,7 +63,6 @@ export default {
     };
   },
   computed: {},
-  mixins: [TableRowMixins],
   created() {
     this.getAccounts();
     handleSubs.push(this.getAccounts);
@@ -76,14 +81,14 @@ export default {
     unstake(row) {},
     // 执行
     mine(row) {
-      this.sendMessage({
+      sendMessage({
         type: 'run',
         data: { tools: [row] }
       });
     },
     // 维修
     repir(row) {
-      this.sendMessage({
+      sendMessage({
         type: 'run',
         data: { repir: [row] }
       });
@@ -162,5 +167,4 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

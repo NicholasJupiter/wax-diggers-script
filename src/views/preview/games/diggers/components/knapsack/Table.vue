@@ -30,18 +30,18 @@
 </template>
 <script>
 import { getAsset } from '@/wax/atom_asset';
-import tableRow from '@/mixins/tableRow';
-import { handleSubs } from '@/store/light';
+import { handleSubs, obser } from '@/store/light';
+import { sendMessage } from '@/utils/util';
 
 export default {
   data() {
     return {
+      obser,
       handleSubs,
       loading: false,
       rows: []
     };
   },
-  mixins: [tableRow],
   created() {
     this.handleSubs.push(this._getAsset);
     this._getAsset();
@@ -63,7 +63,7 @@ export default {
     },
     // 装备
     carry(row) {
-      this.sendMessage({
+      sendMessage({
         type: 'run',
         data: {
           stake: [row]

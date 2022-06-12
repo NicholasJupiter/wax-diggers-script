@@ -57,24 +57,3 @@ export function GetWaxAccount(waxName) {
       return res;
     });
 }
-
-/**
- * 获取所有道具
- * @param {string} gamename
- */
-export async function GetAllProp(gamename) {
-  return await GetWaxTableRows({
-    code: gamename,
-    index_position: 1,
-    scope: gamename,
-    table: 'toolsconfig',
-    lower_bound: '',
-    upper_bound: ''
-  }).then((res) => {
-    res.rows.forEach((v) => {
-      const { template_name, rarity } = v;
-      v.__name = `${template_name} ${rarity}`;
-    });
-    return res.rows;
-  });
-}

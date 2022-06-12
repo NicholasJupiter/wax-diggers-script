@@ -1,7 +1,11 @@
 import Vue from 'vue';
 
 const obser = Vue.observable({
-  allProp: [], // 所有工具
+  games: {
+    diggers: {
+      allProp: [] // 所有工具
+    }
+  },
   gamename: '',
   tables: '',
   owner: '',
@@ -21,7 +25,7 @@ const gamesConfig = Vue.observable({
     useBaitId: 1000, // 使用鱼饵id
     useBaitAmount: 1,
     buyBaitId: 1000, // 购买鱼饵id
-    buyBaitAmount: 1, 
+    buyBaitAmount: 1
   }
 });
 

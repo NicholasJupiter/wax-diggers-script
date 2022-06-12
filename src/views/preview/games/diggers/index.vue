@@ -45,9 +45,7 @@ export default {
       balances: []
     };
   },
-  created() {
-    // this._getUserBalances();
-  },
+  created() {},
   methods: {
     async _getUserBalances() {
       const ret = [];

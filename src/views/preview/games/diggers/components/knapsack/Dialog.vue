@@ -9,7 +9,7 @@
   </div>
 </template>
 <script>
-import Table from './Table.vue';
+import Table from './Table';
 export default {
   components: { Table },
   name: 'ConfigDialog',
