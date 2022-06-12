@@ -63,7 +63,6 @@ export default {
     return {
       COINS,
       obser,
-      gamesConfig,
       handleSubs,
       loading: false,
       updateStimeInter: null, // 更新时间的定时器
@@ -172,7 +171,7 @@ export default {
             mines.push(row);
           }
         }
-        if (mines.length && this.gamesConfig.diggers.isOpen) {
+        if (mines.length && gamesConfig.diggers.isOpen) {
           sendMessage({
             type: 'run',
             data: { tools: mines }

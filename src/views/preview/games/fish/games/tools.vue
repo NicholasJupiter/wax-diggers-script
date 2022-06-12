@@ -48,7 +48,7 @@
   </div>
 </template>
 <script>
-import { handleSubs, obser } from '@/store/light';
+import { handleSubs, gamesConfig } from '@/store/light';
 import { getAccounts, getToolsByToolId } from '../api/table';
 import { getDifferenceTime } from '@/utils/time';
 import { sendMessage } from '@/utils/util';
@@ -56,7 +56,6 @@ export default {
   name: 'ToolsTable',
   data() {
     return {
-      obser,
       loading: false,
       rows: [],
       accountInfo: null // 用户信息
@@ -144,8 +143,8 @@ export default {
           }
         }
 
-        if (Object.keys(mines).length && this.gamesConfig.fishing.isOpen) {
-          this.sendMessage({
+        if (Object.keys(mines).length && gamesConfig.fishing.isOpen) {
+          sendMessage({
             type: 'run',
             data: mines
           });
