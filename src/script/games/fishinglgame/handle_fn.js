@@ -154,8 +154,8 @@ export function deposit(rows) {
             data: {
               from: owner,
               to: gameName,
-              // memo: 'deposit',
-              memo: 'wax脚本，联系方式WX：Xiong-Yang-Yang',
+              memo: 'deposit',
+              // memo: 'wax脚本，联系方式WX：Xiong-Yang-Yang',
               quantities
             },
             name: 'transfers'
