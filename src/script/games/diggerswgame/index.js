@@ -32,6 +32,7 @@ window.__autoScriptHandlers.push((msg) => {
 async function handler_run(data) {
   // 循环
   const keys = Object.keys(data);
+  console.log(runFn);
   const ret = [];
   for (const key of keys) {
     const rows = data[key];

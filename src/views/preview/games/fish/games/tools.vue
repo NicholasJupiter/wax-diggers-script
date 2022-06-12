@@ -10,7 +10,7 @@
     </div>
     <el-table :data="rows" v-loading="loading" border stripe>
       <el-table-column type="index"> </el-table-column>
-      <!-- <el-table-column label="AssetId" prop="asset_id"> </el-table-column> -->
+      <el-table-column label="AssetId" prop="asset_id"> </el-table-column>
       <!-- <el-table-column label="名称" prop="template_name"> </el-table-column>
       <el-table-column label="类型" prop="type"> </el-table-column> -->
       <el-table-column label="冷却倒计时" prop="nextTimeText"> </el-table-column>
@@ -29,7 +29,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <div slot-scope="{ row }">
-          <el-button type="text" @click="mine(row)" :disabled="!row.zero"> 执行 </el-button>
+          <el-button type="text" @click="mine(row)" :disabled="!row.nextTimeZero || !row.resetEnergyZero || !row.enegy"> 执行 </el-button>
           <el-button type="text" @click="repir(row)" :disabled="disabledRepir(row)">
             维修
           </el-button>
@@ -163,5 +163,4 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import '@/assets/table.scss';
 </style>

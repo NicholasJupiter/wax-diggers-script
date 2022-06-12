@@ -47,5 +47,8 @@ export default {
   background-color: transparent;
   box-sizing: border-box;
   font-size: 16px;
+  font-weight: normal
 }
+@import '@/assets/style/comm.scss';
+
 </style>

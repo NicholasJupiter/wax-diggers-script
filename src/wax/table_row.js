@@ -1,6 +1,7 @@
 import axios from '@/http/wax.js';
+import { obser } from '@/store/light';
 
-const talbeBaseUrl = 'https://chain.wax.io/v1/chain/get_table_rows';
+const talbeBaseUrl = 'https://chain.wax.io/v1/chain'; // /get_table_rows';
 
 /**
  * 获取wax table_row资源
@@ -25,16 +26,21 @@ export async function GetWaxTableRows(rowData) {
   if (rowData && typeof rowData === 'object') {
     Object.assign(data, rowData);
   }
-  return axios.post(talbeBaseUrl, data);
+  return axios.post(talbeBaseUrl + '/get_table_rows', data);
 }
 
 /**
- * 获取余额
- * @param {*} waxName
+ * 获取钱包余额
+ * @param {array} currencys
  * @returns
  */
-export function GetAlcorBalances(waxName) {
-  return axios.get('https://lightapi.eosamsterdam.net/api/balances/wax/' + waxName);
+export async function GetWalletBalances(currencys = []) {
+  const { owner } = obser;
+  const walletRet = await axios.get('https://lightapi.eosamsterdam.net/api/balances/wax/' + owner);
+  return currencys.reduce((ret, currency) => {
+    ret[currency] = walletRet.balances.find((v) => v.currency === currency)?.amount || 0;
+    return ret;
+  }, {});
 }
 
 /**

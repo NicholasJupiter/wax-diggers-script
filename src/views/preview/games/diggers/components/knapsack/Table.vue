@@ -1,7 +1,12 @@
 <template>
-  <div class="atom-table">
-    <div class="atom-header">
-      <el-button @click.stop="_getAsset()" :disabled="loading" type="text" icon="el-icon-refresh"> 刷新数据 </el-button>
+  <div class="atom-table table-preview">
+    <div class="table-header">
+      <h2>背包工具</h2>
+      <div class="operation">
+        <el-button @click.stop="_getAsset()" :disabled="loading" type="text" icon="el-icon-refresh">
+          刷新数据
+        </el-button>
+      </div>
     </div>
     <el-table :data="rows" v-loading="loading" border stripe>
       <el-table-column type="index"> </el-table-column>
@@ -29,7 +34,6 @@ import tableRow from '@/mixins/tableRow';
 import { handleSubs } from '@/store/light';
 
 export default {
-  name: 'AtomTable',
   data() {
     return {
       handleSubs,

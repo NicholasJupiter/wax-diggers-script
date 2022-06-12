@@ -1,3 +1,5 @@
+import { gamesConfig } from "@/store/light";
+
 /**
  * 序列化参数
  * @param {*} params
@@ -25,4 +27,36 @@ export function getQueryString(name) {
     return decodeURIComponent(r[2]);
   }
   return null;
+}
+
+/**
+ * 获取计算后的余额对象
+ * @param {*} balances
+ */
+export function getBalancesObj(balances = []) {
+  if (balances && balances.length) {
+    const ret = {};
+    balances.forEach((v) => {
+      const [amount, currency] = v.split(' ');
+      ret[currency] = amount;
+    });
+    return ret;
+  }
+  return {};
+}
+
+/**
+ * 发送消息
+ * @param {object} msg 消息 { type: 'run',  data: { [type: string]: [row] } }
+ */
+export function sendMessage(msg) {
+  const data = { __script: true, ...msg, gamesConfig: { ...gamesConfig } };
+  console.log('send message....', data);
+  try {
+    window.postMessage(data, '*');
+  } catch (error) {}
+  if (window.parent !== window.self) {
+    window.parent.postMessage(data, '*');
+    return;
+  }
 }

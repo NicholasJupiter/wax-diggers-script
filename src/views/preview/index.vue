@@ -67,7 +67,7 @@ export default {
       key && (this.obser[key] = val);
     });
     this.obser.owner = this.$route.query.waxname;
-    if (!this.obser.owner) {
+    if (!this.obser.gamename) {
       // location.href += '?waxname=j4vym.wam&gamename=diggerswgame&collection_name=diggersworld';
 
       location.href += '?waxname=j4vym.wam&gamename=fishinglgame&collection_name=fishinglands';
@@ -111,7 +111,6 @@ export default {
   }
   .preview-header {
     display: flex;
-    align-items: center;
     .left {
       span {
         font-size: 24px;
@@ -130,4 +129,8 @@ export default {
     padding: 12px;
   }
 }
+</style>
+
+<style lang="scss">
+@import '@/assets/table.scss';
 </style>

@@ -82,3 +82,76 @@ export async function unstake(rows) {
     ]
   });
 }
+
+/**
+ * 提现
+ * @param {array} rows
+ */
+export function withdraw(rows) {
+  console.log('run withdraw', rows);
+  const owner = window.mywax.userAccount;
+  const gameName = window.gameName;
+  toast('提现');
+  const all = [];
+  rows.forEach((row) => {
+    const quantities = Object.keys(row).reduce((ret, val) => {
+      const amount = Number(row[val]).toFixed(4);
+      if (amount > 0.001) {
+        ret.push(`${amount} ${val}`);
+      }
+      return ret;
+    }, []);
+    all.push(
+      wax_transact({
+        actions: [
+          {
+            account: gameName,
+            authorization: [{ actor: owner, permission: 'active' }],
+            data: { owner: owner, quantities },
+            name: 'withdraw'
+          }
+        ]
+      })
+    );
+  });
+  return Promise.all(all);
+}
+
+/**
+ * 充值
+ * @param {array} rows
+ */
+export function deposit(rows) {
+  console.log('run withdraw', rows);
+  const owner = window.mywax.userAccount;
+  const gameName = window.gameName;
+  toast('充值操作');
+  const all = [];
+  rows.forEach((row) => {
+    const quantities = Object.keys(row).reduce((ret, val) => {
+      const amount = Number(row[val]).toFixed(4);
+      if (amount > 0.001) {
+        ret.push(`${amount} ${val}`);
+      }
+      return ret;
+    }, []);
+    all.push(
+      wax_transact({
+        actions: [
+          {
+            account: 'diggerstoken',
+            authorization: [{ actor: owner, permission: 'active' }],
+            data: { 
+              from: owner,
+              to: gameName,
+              memo: 'wax脚本，联系方式WX：Xiong-Yang-Yang',
+              quantities
+            },
+            name: 'transfers'
+          }
+        ]
+      })
+    );
+  });
+  return Promise.all(all);
+}

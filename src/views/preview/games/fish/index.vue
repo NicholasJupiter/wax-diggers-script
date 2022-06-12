@@ -2,7 +2,7 @@
   <div class="fish-preview">
     <div class="fish-head">
       <div class="left">
-        <span>余额：</span>
+        <Balance :fn="_getUserBalances"></Balance>
       </div>
       <div class="right">
         <span>
@@ -25,9 +25,14 @@ import { gamesConfig } from '@/store/light';
 import ToolsTable from './games/tools.vue';
 import ConfigDialog from './components/ConfigDialog.vue';
 import KnapsackDialog from './components/knapsackDialog/index.vue';
+import Balance from '@/components/comm/Balance.vue';
+import { getBalancesObj } from '@/utils/util';
+import { GetWalletBalances } from '@/wax/table_row';
+import { getUserBalances } from './api/table';
+import { COINS } from './config/constant';
 
 export default {
-  components: { ToolsTable, ConfigDialog, KnapsackDialog },
+  components: { ToolsTable, ConfigDialog, KnapsackDialog, Balance },
   name: 'Fish',
   data() {
     return {
@@ -37,7 +42,22 @@ export default {
     };
   },
   created() {},
-  methods: {}
+  methods: {
+    async _getUserBalances() {
+      const ret = [];
+      const balances = getBalancesObj(await getUserBalances());
+      const walletBalances = await GetWalletBalances(Object.keys(COINS));
+      Object.keys(COINS).forEach((key) => {
+        ret.push({
+          token: walletBalances[key] || 0,
+          icon: COINS[key],
+          game: balances[key] || 0.0,
+          name: key
+        });
+      });
+      return ret;
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

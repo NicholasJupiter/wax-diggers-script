@@ -57,3 +57,15 @@ export async function getInUseBaits() {
   }
   return null;
 }
+
+/**
+ * 获取用户余额
+ * @returns
+ */
+export async function getUserBalances() {
+  const ret = await getAccounts();
+  if (ret && ret.rows.length) {
+    return ret.rows[0].balances;
+  }
+  return null;
+}

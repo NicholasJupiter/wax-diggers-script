@@ -1,4 +1,6 @@
 import { gamesConfig, obser } from '@/store/light.js';
+import { sendMessage } from '@/utils/util';
+
 export default {
   data() {
     return {
@@ -11,21 +13,21 @@ export default {
     getRowProp(template_id) {
       return this.obser.allProp.find((item) => item.template_id == template_id);
     },
-
-    /**
-     * 发送消息
-     * @param {any} msg 消息
-     */
-    sendMessage(msg) {
-      const data = { __script: true, ...msg, gamesConfig: { ...gamesConfig } };
-      console.log('send message....', data);
-      try {
-        window.postMessage(data, '*');
-      } catch (error) {}
-      if (window.parent !== window.self) {
-        window.parent.postMessage(data, '*');
-        return;
-      }
-    }
+    sendMessage
+    // /**
+    //  * 发送消息
+    //  * @param {any} msg 消息
+    //  */
+    // sendMessage(msg) {
+    //   const data = { __script: true, ...msg, gamesConfig: { ...gamesConfig } };
+    //   console.log('send message....', data);
+    //   try {
+    //     window.postMessage(data, '*');
+    //   } catch (error) {}
+    //   if (window.parent !== window.self) {
+    //     window.parent.postMessage(data, '*');
+    //     return;
+    //   }
+    // }
   }
 };

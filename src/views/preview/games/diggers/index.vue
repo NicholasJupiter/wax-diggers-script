@@ -1,32 +1,81 @@
 <template>
   <div class="diggers-preview">
-    <el-tabs value="game">
-      <el-tab-pane label="工具" name="game">
-        <GameTable></GameTable>
-      </el-tab-pane>
-      <el-tab-pane label="背包" name="atom">
-        <AtomTable></AtomTable>
-      </el-tab-pane>
-    </el-tabs>
+    <div class="diggers-head flex">
+      <div class="balances">
+        <Balance :fn="_getUserBalances"></Balance>
+      </div>
+      <div class="right flex align-center config">
+        <div>
+          自动运行:
+          <el-switch v-model="gamesConfig.diggers.isOpen" />
+        </div>
+        <el-button type="text" @click="knapsackVisible = true">背包</el-button>
+        <el-button type="text" @click="configVisible = true">配置</el-button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <ToolsTable></ToolsTable>
+    </div>
+    <ConfigDialog v-model="configVisible"></ConfigDialog>
+    <KnapsackDialog v-model="knapsackVisible"></KnapsackDialog>
   </div>
 </template>
 <script>
-import { obser } from '@/store/light';
+import { gamesConfig, obser } from '@/store/light';
 
-import GameTable from './game/table.vue';
-import AtomTable from './atom/table.vue';
+import ToolsTable from './game/tools.vue';
+import KnapsackDialog from './components/knapsack/Dialog.vue';
+import ConfigDialog from './components/ConfigDialog.vue';
+import Balance from '@/components/comm/Balance.vue';
+import { getUserBalances } from './api/table';
+import { getBalancesObj } from '@/utils/util';
+import { COINS } from './config/constant';
+import { GetWalletBalances } from '@/wax/table_row';
 
 export default {
-  components: { AtomTable, GameTable },
+  components: { ToolsTable, ConfigDialog, KnapsackDialog, Balance },
   name: 'Diggers',
   data() {
     return {
-      obser
+      obser,
+      gamesConfig,
+      configVisible: false,
+      knapsackVisible: false,
+      balances: []
     };
   },
   created() {
+    // this._getUserBalances();
   },
-  methods: {}
+  methods: {
+    async _getUserBalances() {
+      const ret = [];
+      const balances = getBalancesObj(await getUserBalances());
+      const walletBalances = await GetWalletBalances(Object.keys(COINS));
+      Object.keys(COINS).forEach((key) => {
+        ret.push({
+          token: walletBalances[key] || 0,
+          icon: COINS[key],
+          game: balances[key] || 0.0,
+          name: key
+        });
+      });
+      return ret;
+    }
+  }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.table-container {
+  padding: 12px;
+}
+.diggers-head {
+  align-items: flex-end;
+  .config {
+    * + * {
+      margin-left: 8px;
+    }
+  }
+}
+</style>

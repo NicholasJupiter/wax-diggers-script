@@ -45,12 +45,16 @@ export async function tools(rows) {
 /**
  * 安装鱼饵
  */
-export async function stakeBait() {
+export async function stakeBait(rows) {
   toast('安装鱼饵。。。');
+  const bait = new Bait();
+  if (rows) {
+    const { baitId, amount } = rows[0];
+    toast(`使用鱼饵: id: ${baitId}, amount: ${amount}`);
+    return await bait.stake(amount, baitId);
+  }
   const { useBaitAmount, useBaitId } = window.gamesConfig.fishing;
   let useBaits = await getUseBaits(useBaitId, useBaitAmount);
-  const bait = new Bait();
-  console.log(useBaits, 'baits');
   // 没有鱼饵了 需要购买
   if (!useBaits || !useBaits.amount) {
     await buyBait();
@@ -66,11 +70,18 @@ export async function stakeBait() {
 /**
  * 购买鱼饵
  */
-export function buyBait() {
+export function buyBait(rows) {
   toast('购买鱼饵。。');
-  const { buyBaitId, buyBaitAmount } = window.gamesConfig.fishing;
+  let buyBaitId, buyBaitAmount;
+  if (rows) {
+    buyBaitId = rows[0].buyBaitId;
+    buyBaitAmount = rows[0].buyBaitAmount;
+  } else {
+    buyBaitId = window.gamesConfig.fishing.buyBaitId;
+    buyBaitAmount = window.gamesConfig.fishing.buyBaitId;
+  }
   const bait = new Bait();
-  return bait.buy(Number(buyBaitAmount), buyBaitId);
+  return bait.buy(Number(buyBaitAmount), Number(buyBaitId));
 }
 
 /**
@@ -82,4 +93,76 @@ export function repir(rows) {
   toast('进行维修');
   const comm = new Comm();
   return comm.repir(rows);
+}
+
+/**
+ * 提现
+ * @param {array} rows
+ */
+export function withdraw(rows) {
+  console.log('run withdraw', rows);
+  const owner = window.mywax.userAccount;
+  const gameName = window.gameName;
+  toast('提现');
+  const all = [];
+  rows.forEach((row) => {
+    const quantities = Object.keys(row).reduce((ret, val) => {
+      const amount = Number(row[val]).toFixed(4);
+      ret.push(`${amount} ${val}`);
+      return ret;
+    }, []);
+    all.push(
+      wax_transact({
+        actions: [
+          {
+            account: gameName,
+            authorization: [{ actor: owner, permission: 'active' }],
+            data: { owner: owner, assets: quantities },
+            name: 'withdraw'
+          }
+        ]
+      })
+    );
+  });
+  return Promise.all(all);
+}
+
+/**
+ * 充值
+ * @param {array} rows
+ */
+export function deposit(rows) {
+  console.log('run withdraw', rows);
+  const owner = window.mywax.userAccount;
+  const gameName = window.gameName;
+  toast('充值操作');
+  const all = [];
+  rows.forEach((row) => {
+    const quantities = Object.keys(row).reduce((ret, val) => {
+      const amount = Number(row[val]).toFixed(4);
+      if (amount > 0.001) {
+        ret.push(`${amount} ${val}`);
+      }
+      return ret;
+    }, []);
+    all.push(
+      wax_transact({
+        actions: [
+          {
+            account: 'fishingcoins',
+            authorization: [{ actor: owner, permission: 'active' }],
+            data: {
+              from: owner,
+              to: gameName,
+              // memo: 'deposit',
+              memo: 'wax脚本，联系方式WX：Xiong-Yang-Yang',
+              quantities
+            },
+            name: 'transfers'
+          }
+        ]
+      })
+    );
+  });
+  return Promise.all(all);
 }
