@@ -13,6 +13,7 @@ export async function wax_login() {
       return await window.mywax.login(window.gameName);
     }
     console.log('未登录..., 2分钟未登录 视为失败');
+    toast('未登录..., 2分钟未登录 视为失败');
     return await promiseTimeout(window.mywax.login(window.gameName), 2 * 60000);
   } catch (e) {
     console.error('登录失败!!');

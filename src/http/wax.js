@@ -36,14 +36,11 @@ axios.interceptors.response.use(
     // 如果是wax官方api就更改地址，防止某个url超时导致错误
     if (config.url.includes('/v1/chain/')) {
       if (!baseurls[config.__retryCount]) {
-        console.log('不存在地址, 从索引0开始。');
         config.__retryCount = 0;
       }
       config.url = config.url.replace(/https?:\/\/[^\/]*/g, baseurls[config.__retryCount]);
     }
-
     console.log(config.url + ' 自动重试第' + config.__retryCount + '次');
-    console.log('重试请求', config);
     // 返回重试请求
     return sleep(5000).then(() => axios(config));
   }

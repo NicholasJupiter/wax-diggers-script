@@ -20,8 +20,7 @@ if (typeof window === 'object') {
   }
 
   window.addEventListener('load', () => {
-    console.log(process.env, 'env');
-    console.log('name', window.gameName);
+    console.log(process.env, window.gameName);
     if (window.gameName) {
       require(`./games/${window.gameName}/index.js`);
     }

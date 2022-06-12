@@ -48,7 +48,6 @@ export default {
   watch: {
     gamesConfig: {
       handler(config) {
-        console.log('update config', config);
         localStorage.setItem('gamesConfig', JSON.stringify(config));
       },
       deep: true
@@ -70,7 +69,7 @@ export default {
     if (!this.obser.gamename) {
       location.href += '?waxname=j4vym.wam&gamename=diggerswgame&collection_name=diggersworld';
       // location.href += '?waxname=j4vym.wam&gamename=fishinglgame&collection_name=fishinglands';
-      
+
       location.reload();
       return;
     }

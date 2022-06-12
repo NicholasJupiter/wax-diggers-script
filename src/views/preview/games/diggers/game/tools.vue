@@ -16,12 +16,21 @@
 
     <el-table :data="tableRows" v-loading="loading" border stripe>
       <el-table-column type="index"> </el-table-column>
-      <!-- <el-table-column label="AssetId" prop="asset_id"> </el-table-column> -->
-      <el-table-column label="名称" prop="template_name"> </el-table-column>
+      <el-table-column label="名称">
+        <span slot-scope="{ row }">{{ row.prop.__name }}</span>
+      </el-table-column>
       <el-table-column label="类型" prop="type"> </el-table-column>
       <el-table-column label="剩余时间" prop="nextTimeText"> </el-table-column>
       <el-table-column label="耐久度">
-        <span slot-scope="{ row }"> {{ row.init_durability }}/{{ row.durability }} </span>
+        <span slot-scope="{ row }"> {{ row.prop.init_durability }}/{{ row.durability }} </span>
+      </el-table-column>
+      <el-table-column label="维修需要">
+        <div slot-scope="{ row }" class="repair_cost">
+          <div class="item" v-for="(item, key) in row.prop.repair_once" :key="key">
+            <img :src="COINS[key]" />
+            <span>{{ item * (row.prop.init_durability - row.durability) }}</span>
+          </div>
+        </div>
       </el-table-column>
       <el-table-column label="操作">
         <div slot-scope="{ row }">
@@ -41,17 +50,18 @@
   </div>
 </template>
 <script>
-import { GetWaxTableRows } from '@/wax/table_row';
 import { handleSubs, obser, gamesConfig } from '@/store/light';
 import { getDifferenceTime } from '@/utils/time';
-import { GetAllProp } from '../api/table';
+import { GetAllProp, getUserTools } from '../api/table';
 import { sendMessage } from '@/utils/util';
+import { COINS } from '../config/constant';
 
 export default {
   name: 'GameTable',
   components: {},
   data() {
     return {
+      COINS,
       obser,
       gamesConfig,
       handleSubs,
@@ -131,35 +141,19 @@ export default {
      */
     async getTableTools() {
       this.loading = true;
-      const { owner, gamename } = this.obser;
       // 没有查询过所有工具
       if (!this.obser.games.diggers.allProp.length) {
         await this.queryProps();
       }
-      await GetWaxTableRows({
-        lower_bound: owner,
-        index_position: 2,
-        upper_bound: owner,
-        table: 'tools',
-        scope: gamename,
-        code: gamename
-      }).then((res) => {
-        const { rows } = res;
-        if (rows.length) {
-          console.log(rows);
-          rows.forEach((row) => {
-            const rowProp = this.getRowProp(row.template_id);
-            if (rowProp) {
-              const { __name, init_durability } = rowProp;
-              row.template_name = __name;
-              row.init_durability = init_durability;
-            }
-          });
-          rows.sort((v, n) => (v.template_id > n.template_id ? -1 : 0));
-        }
-        console.log('tools 查询结果:', rows);
-        this.tableRows = rows;
-      });
+      const { rows } = await getUserTools();
+      if (rows.length) {
+        rows.forEach((row) => {
+          const rowProp = this.getRowProp(row.template_id);
+          if (rowProp) row.prop = rowProp;
+        });
+        rows.sort((v, n) => (v.template_id > n.template_id ? -1 : 0));
+      }
+      this.tableRows = rows;
       this.loading = false;
     },
 
@@ -210,4 +204,14 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.repair_cost {
+  img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    object-fit: contain;
+    margin-right: 4px;
+  }
+}
+</style>

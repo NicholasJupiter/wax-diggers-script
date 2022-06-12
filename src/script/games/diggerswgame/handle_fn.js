@@ -91,7 +91,7 @@ export function withdraw(rows) {
   console.log('run withdraw', rows);
   const owner = window.mywax.userAccount;
   const gameName = window.gameName;
-  toast('提现');
+  toast('进行提现操作');
   const all = [];
   rows.forEach((row) => {
     const quantities = Object.keys(row).reduce((ret, val) => {
@@ -122,10 +122,10 @@ export function withdraw(rows) {
  * @param {array} rows
  */
 export function deposit(rows) {
-  console.log('run withdraw', rows);
+  console.log('run deposit', rows);
   const owner = window.mywax.userAccount;
   const gameName = window.gameName;
-  toast('充值操作');
+  toast('进行充值操作');
   const all = [];
   rows.forEach((row) => {
     const quantities = Object.keys(row).reduce((ret, val) => {
