@@ -5,19 +5,14 @@
         <Balance :fn="_getUserBalances"></Balance>
       </div>
       <div class="right flex align-center config">
-        <div>
-          自动运行:
-          <el-switch v-model="gamesConfig.diggers.isOpen" />
-        </div>
         <el-button type="text" @click="knapsackVisible = true">背包</el-button>
-        <el-button type="text" @click="configVisible = true">配置</el-button>
       </div>
     </div>
 
     <div class="table-container">
       <ToolsTable></ToolsTable>
+      <TrolleyTable></TrolleyTable>
     </div>
-    <ConfigDialog v-model="configVisible"></ConfigDialog>
     <KnapsackDialog v-model="knapsackVisible"></KnapsackDialog>
   </div>
 </template>
@@ -26,15 +21,14 @@ import { gamesConfig, obser } from '@/store/light';
 
 import ToolsTable from './game/tools.vue';
 import KnapsackDialog from './components/knapsack/Dialog.vue';
-import ConfigDialog from './components/ConfigDialog.vue';
 import Balance from '@/components/comm/Balance.vue';
 import { getUserBalances } from './api/table';
-import { getBalancesObj } from '@/utils/util';
 import { COINS } from './config/constant';
 import { GetWalletBalances } from '@/wax/table_row';
+import TrolleyTable from './game/trolley.vue';
 
 export default {
-  components: { ToolsTable, ConfigDialog, KnapsackDialog, Balance },
+  components: { TrolleyTable, ToolsTable, KnapsackDialog, Balance },
   name: 'Diggers',
   data() {
     return {
@@ -49,7 +43,7 @@ export default {
   methods: {
     async _getUserBalances() {
       const ret = [];
-      const balances = getBalancesObj(await getUserBalances());
+      const balances = await getUserBalances();
       const walletBalances = await GetWalletBalances(Object.keys(COINS));
       Object.keys(COINS).forEach((key) => {
         ret.push({

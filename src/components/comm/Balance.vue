@@ -20,7 +20,7 @@
       </div>
       <div class="amount-item" v-for="item of balances" :key="item.icon">
         <span>{{ item.token }}</span>
-        <span><img :src="item.icon" /></span>
+        <span><img :src="item.icon" class="icon-currency" /></span>
         <span>{{ item.game }}</span>
       </div>
     </div>
@@ -74,12 +74,6 @@ export default {
     width: 33%;
     text-align: center;
     font-size: 14px;
-    img {
-      width: 24px;
-      height: 24px;
-      object-fit: contain;
-      vertical-align: middle;
-    }
   }
   .footer {
     text-align: center;

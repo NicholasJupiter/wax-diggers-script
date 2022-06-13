@@ -7,7 +7,7 @@ import { Comm } from './comm';
 export default class Tools extends Comm {
   rows = [];
   constructor(_rows) {
-    super(_rows[0].account);
+    super();
     this.rows = _rows;
   }
 

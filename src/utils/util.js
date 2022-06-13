@@ -38,7 +38,7 @@ export function getBalancesObj(balances = []) {
     const ret = {};
     balances.forEach((v) => {
       const [amount, currency] = v.split(' ');
-      ret[currency] = amount;
+      ret[currency] = Number(amount);
     });
     return ret;
   }

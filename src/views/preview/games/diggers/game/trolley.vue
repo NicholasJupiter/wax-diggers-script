@@ -1,13 +1,12 @@
 <template>
   <div class="game-table table-preview">
     <div class="table-header">
-      <h2>工具</h2>
+      <h2>手推车</h2>
       <div class="operation">
         <div>
           自动运行:
-          <el-switch v-model="gamesConfig.diggers.tools.open" />
+          <el-switch v-model="gamesConfig.diggers.trolley.open" />
         </div>
-        <el-button type="text" @click="configVisible = true">配置</el-button>
         <el-button
           @click="queryAssetsByName"
           :disabled="loading"
@@ -24,55 +23,45 @@
       <el-table-column label="名称">
         <span slot-scope="{ row }">{{ row.prop.__name }}</span>
       </el-table-column>
-      <el-table-column label="类型" prop="type"> </el-table-column>
-      <el-table-column label="剩余时间" prop="nextTimeText"> </el-table-column>
-      <el-table-column label="耐久度">
-        <span slot-scope="{ row }"> {{ row.prop.init_durability }}/{{ row.durability }} </span>
+      <el-table-column label="建造次数">
+        <span slot-scope="{ row }"> {{ row.prop.build_count }}/{{ row.build_counter }} </span>
       </el-table-column>
-      <el-table-column label="维修需要">
-        <div slot-scope="{ row }" class="repair_cost">
-          <div class="item" v-for="(item, key) in row.prop.repair_once" :key="key">
+      <el-table-column label="剩余时间" prop="nextTimeText"> </el-table-column>
+      <el-table-column label="单次建造材料">
+        <div slot-scope="{ row }">
+          <div v-for="(item, key) in row.prop._build_price" :key="key">
             <img :src="COINS[key]" class="icon-currency" />
-            <span class="balances">{{ item * (row.prop.init_durability - row.durability) }}</span>
+            <span class="balances">{{ item }}</span>
           </div>
         </div>
       </el-table-column>
       <el-table-column label="操作">
         <div slot-scope="{ row }">
-          <el-button
-            type="text"
-            @click="repir(row)"
-            :disabled="row.prop.init_durability === row.durability"
-          >
-            维修
-          </el-button>
+          <el-button type="text" @click="build(row)" :disabled="!row.zero"> 建造 </el-button>
           <el-button type="text" @click="unstake(row)" :disabled="unstakeDisable(row)">
             卸下
           </el-button>
         </div>
       </el-table-column>
     </el-table>
-    <ConfigDialog v-model="configVisible"></ConfigDialog>
   </div>
 </template>
 <script>
 import { handleSubs, obser, gamesConfig } from '@/store/light';
 import { getDifferenceTime } from '@/utils/time';
-import { GetAllTools, getUserTools } from '../api/table';
+import { GetAllRushConfig, getUserBalances, getUserTrolley } from '../api/table';
 import { sendMessage } from '@/utils/util';
 import { COINS } from '../config/constant';
-import ConfigDialog from '../components/tools/ConfigDialog.vue';
 
 export default {
-  name: 'ToolsTable',
-  components: { ConfigDialog },
+  name: 'TrolleyTable',
+  components: {},
   data() {
     return {
       COINS,
       obser,
       gamesConfig,
       handleSubs,
-      configVisible: false,
       loading: false,
       updateStimeInter: null, // 更新时间的定时器
       loading: false,
@@ -80,12 +69,11 @@ export default {
     };
   },
   created() {
-    window.testSendMsg = this.testSendMsg;
     this.init();
   },
   watch: {
     gamesConfig: {
-      handler(val) {
+      handler() {
         this.queryAssetsByName();
       },
       deep: true
@@ -94,20 +82,17 @@ export default {
 
   methods: {
     unstakeDisable(row) {
-      const { init_durability, durability, zero } = row;
-      if (init_durability !== durability) {
-        return true;
-      }
+      const { zero } = row;
       return !zero;
     },
     /**
-     * 维修道具
+     * 建造
      * @param {object} row
      */
-    repir(row) {
+    build(row) {
       sendMessage({
         type: 'run',
-        data: { repir: [row] }
+        data: { build: [row] }
       });
     },
     /**
@@ -130,35 +115,26 @@ export default {
      */
     async queryAssetsByName() {
       clearTimeout(this.updateStimeInter);
-      await this.getTableTools();
+      await this.getTableData();
       this.updatestime();
-    },
-
-    /**
-     * 查询所有工具
-     */
-    async queryProps() {
-      const allTools = await GetAllTools(this.obser.gamename);
-      if (allTools) {
-        this.obser.games.diggers.allTools.push(...allTools);
-      }
     },
     /**
      * 获取工具, 用来显示
      */
-    async getTableTools() {
+    async getTableData() {
       this.loading = true;
-      // 没有查询过所有工具
-      if (!this.obser.games.diggers.allTools.length) {
-        await this.queryProps();
+      if (!this.obser.games.diggers.allRush.length) {
+        const allRush = await GetAllRushConfig();
+        this.obser.games.diggers.allRush.push(...allRush);
       }
-      const { rows } = await getUserTools();
+      const { rows } = await getUserTrolley();
       if (rows.length) {
         rows.forEach((row) => {
-          const rowProp = this.getRowProp(row.template_id);
-          if (rowProp) row.prop = rowProp;
+          row.prop = {
+            __name: '手推车',
+            ...this.obser.games.diggers.allRush[0]
+          };
         });
-        rows.sort((v, n) => (v.template_id > n.template_id ? -1 : 0));
       }
       this.tableRows = rows;
       this.loading = false;
@@ -167,48 +143,73 @@ export default {
     /**
      * 更新时间
      */
-    updatestime() {
+    async updatestime() {
       const { tableRows } = this;
-      this.updateStimeInter = setTimeout(() => {
-        const mines = [];
+      this.updateStimeInter = setTimeout(async () => {
+        const mines = {};
         for (const row of tableRows) {
-          const { zero, text } = getDifferenceTime(row.next_mine * 1000);
+          const { zero, text } = getDifferenceTime(row.next_action_time * 1000);
           this.$set(row, 'zero', zero);
           this.$set(row, 'nextTimeText', text);
           if (zero) {
-            mines.push(row);
+            const type = row.build_counter === 10 ? '' : 'build';
+            if (type === 'build') {
+              // 获取余额
+              const balances = await getUserBalances();
+              const isSati = this.satisfyBuildBalances(balances, row.prop._build_price);
+              if (isSati) {
+                this.setRunData(mines, type, row);
+              }
+            } else {
+              this.setRunData(mines, type, row);
+            }
           }
         }
-        if (mines.length && this.gamesConfig.diggers.tools.open) {
+        if (Object.keys(mines).length && this.gamesConfig.diggers.trolley.open) {
           sendMessage({
             type: 'run',
-            data: { tools: mines }
+            data: mines
           });
           return;
         }
         this.updatestime();
       }, 1000);
     },
-
-    // 获取参数
-    getRowProp(template_id) {
-      return this.obser.games.diggers.allTools.find((item) => item.template_id == template_id);
-    },
-
     /**
-     * 测试发送
+     * 设置data
      */
-    testSendMsg() {
-      const mines = [];
-      for (const row of this.tableRows) {
-        mines.push(row);
+    setRunData(obj, key, item) {
+      if (obj[key]) {
+        obj[key].push(item);
+      } else {
+        obj[key] = [item];
       }
-      sendMessage({
-        type: 'run',
-        data: { tools: mines }
-      });
+    },
+    /**
+     * 是否满足余额
+     */
+    async satisfyBuildBalances(balances, price) {
+      let ret = true;
+      for (const key of Object.keys(price)) {
+        console.log(price[key], balances[key], key);
+        if (price[key] && balances[key] < price[key]) {
+          ret = false;
+          break;
+        }
+      }
+      return ret;
     }
   }
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.repair_cost {
+  img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    object-fit: contain;
+    margin-right: 4px;
+  }
+}
+</style>

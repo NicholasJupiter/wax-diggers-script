@@ -73,6 +73,7 @@ export default {
       location.reload();
       return;
     }
+    this.$message.success('加载脚本成功!');
     this.globalTimeout();
   },
   methods: {

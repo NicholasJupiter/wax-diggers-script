@@ -3,6 +3,10 @@
     <div class="table-header">
       <h2>工具</h2>
       <div class="operation">
+        <span>
+          自动运行：
+          <el-switch v-model="gamesConfig.fishing.tools.open"></el-switch>
+        </span>
         <el-button @click="getAccounts" :disabled="loading" type="text" icon="el-icon-refresh">
           刷新数据
         </el-button>
@@ -48,7 +52,7 @@
   </div>
 </template>
 <script>
-import { handleSubs, obser } from '@/store/light';
+import { gamesConfig, handleSubs, obser } from '@/store/light';
 import { getAccounts, getToolsByToolId } from '../api/table';
 import { getDifferenceTime } from '@/utils/time';
 import { sendMessage } from '@/utils/util';
@@ -57,6 +61,7 @@ export default {
   data() {
     return {
       obser,
+      gamesConfig,
       loading: false,
       rows: [],
       accountInfo: null // 用户信息
@@ -144,7 +149,7 @@ export default {
           }
         }
 
-        if (Object.keys(mines).length && this.gamesConfig.fishing.isOpen) {
+        if (Object.keys(mines).length && this.gamesConfig.fishing.tools.open) {
           this.sendMessage({
             type: 'run',
             data: mines

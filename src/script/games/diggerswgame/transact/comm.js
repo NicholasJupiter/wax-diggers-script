@@ -6,8 +6,8 @@ import { wax_transact } from '@s/wax/wax_event.js';
 class Comm {
   account = '';
   gameName = '';
-  constructor(account) {
-    this.account = account;
+  constructor() {
+    this.account = window.mywax.userAccount;
     this.gameName = window.gameName;
   }
 

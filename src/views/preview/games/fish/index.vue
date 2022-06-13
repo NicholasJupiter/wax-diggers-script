@@ -5,10 +5,6 @@
         <Balance :fn="_getUserBalances"></Balance>
       </div>
       <div class="right">
-        <span>
-          自动运行：
-          <el-switch v-model="gamesConfig.fishing.isOpen"></el-switch>
-        </span>
         <el-button type="text" @click="knapsackVisible = true"> 背包 </el-button>
         <el-button type="text" @click="visible = true"> 配置 </el-button>
       </div>
@@ -45,7 +41,7 @@ export default {
   methods: {
     async _getUserBalances() {
       const ret = [];
-      const balances = getBalancesObj(await getUserBalances());
+      const balances = await getUserBalances();
       const walletBalances = await GetWalletBalances(Object.keys(COINS));
       Object.keys(COINS).forEach((key) => {
         ret.push({

@@ -23,7 +23,7 @@ function _getWaxTableRows(table, _owner) {
 
 /**
  * 获取用户工具
- * @returns 
+ * @returns
  */
 export function getUserTools() {
   const { owner, gamename } = obser;
@@ -38,13 +38,29 @@ export function getUserTools() {
 }
 
 /**
+ * 获取手推车
+ * @returns
+ */
+export function getUserTrolley() {
+  const { owner, gamename } = obser;
+  return GetWaxTableRows({
+    lower_bound: owner,
+    index_position: 1,
+    upper_bound: owner,
+    table: 'trolley',
+    scope: gamename,
+    code: gamename
+  });
+}
+
+/**
  * 获取用户余额
  * @returns
  */
 export async function getUserBalances() {
   const ret = await _getWaxTableRows('userbalance');
   if (ret.rows.length) {
-    return ret.rows[0].balance;
+    return getBalancesObj(ret.rows[0].balance);
   }
   return null;
 }
@@ -53,7 +69,7 @@ export async function getUserBalances() {
  * 获取所有道具
  * @param {string} gamename
  */
-export async function GetAllProp() {
+export async function GetAllTools() {
   const res = await _getWaxTableRows('toolsconfig', '');
   res.rows.forEach((v) => {
     const { template_name, rarity, repair_cost, init_durability } = v;
@@ -67,4 +83,33 @@ export async function GetAllProp() {
     v.__name = `${getZh(template_name)} ${getZh(rarity)}`;
   });
   return res.rows;
+}
+
+/**
+ * 获取所有rush元素，里面包括手推车
+ */
+export async function GetAllRushConfig() {
+  const { gamename } = obser;
+  const ret = await GetWaxTableRows({
+    code: gamename,
+    index_position: 1,
+    json: true,
+    key_type: '',
+    limit: 100,
+    lower_bound: null,
+    reverse: false,
+    scope: gamename,
+    show_payer: false,
+    table: 'rushconfig',
+    upper_bound: null
+  });
+  if (ret.rows) {
+    ret.rows.forEach((row) => {
+      row._build_price = getBalancesObj(row.build_price);
+      row._long_reward = getBalancesObj(row.long_reward);
+      row._short_reward = getBalancesObj(row.short_reward);
+    });
+    return ret.rows;
+  }
+  return [];
 }

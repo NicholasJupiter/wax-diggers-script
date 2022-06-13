@@ -13,9 +13,18 @@
     }
     >.operation{
       margin-left: auto;
+      display: flex;
+      align-items: center;
+      >* + *{
+        margin-left: 8px;
+      }
     }
   }
   & + &{
     margin-top: 12px;
   }
+}
+
+.el-button [class*=el-icon-refresh]+span{
+  margin-left: 0;
 }

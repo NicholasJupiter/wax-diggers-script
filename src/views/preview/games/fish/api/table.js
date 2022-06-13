@@ -1,4 +1,5 @@
 import { obser } from '@/store/light';
+import { getBalancesObj } from '@/utils/util';
 import { GetWaxTableRows } from '@/wax/table_row';
 
 /**
@@ -15,12 +16,12 @@ function waxTableRows(table, _owner) {
     json: true,
     key_type: '',
     limit: 100,
-    lower_bound: _owner || owner,
+    lower_bound: _owner ?? owner,
     reverse: false,
     scope: gamename,
     show_payer: false,
     table,
-    upper_bound: _owner || owner
+    upper_bound: _owner ?? owner
   });
 }
 
@@ -65,7 +66,7 @@ export async function getInUseBaits() {
 export async function getUserBalances() {
   const ret = await getAccounts();
   if (ret && ret.rows.length) {
-    return ret.rows[0].balances;
+    return getBalancesObj(ret.rows[0].balances);
   }
   return null;
 }

@@ -22,7 +22,7 @@ export default {
   name: 'ConfigDialog',
   data() {
     return {
-      config: { ...gamesConfig.diggers }
+      config: { ...gamesConfig.diggers.tools }
     };
   },
   props: {
@@ -34,7 +34,7 @@ export default {
   watch: {
     value(val) {
       if (val) {
-        this.config = { ...gamesConfig.diggers };
+        this.config = { ...gamesConfig.diggers.tools };
       }
     }
   },
@@ -51,7 +51,7 @@ export default {
   created() {},
   methods: {
     confirm() {
-      this.$mergeForm(gamesConfig.diggers, this.config);
+      this.$mergeForm(gamesConfig.diggers.tools, this.config);
       this.$message.success('保存成功！');
       this.selfVisible = false;
     }

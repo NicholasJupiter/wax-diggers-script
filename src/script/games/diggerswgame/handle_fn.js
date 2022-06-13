@@ -14,7 +14,11 @@ export async function tools(rows) {
   console.log('run tools', rows, getNow());
   const account = rows[0].account;
   const passes = await getPasses(account);
-  await repir(rows, 1);
+  const repirRet = await repir(rows, true);
+  if (repirRet && !repirRet.success) {
+    toast('维修失败！');
+    rows = rows.filter(({ durability }) => durability);
+  }
   const _tools = new Tools(rows);
   toast('执行挖矿');
   return await _tools[passes ? 'execAll' : 'exec']();
@@ -22,27 +26,27 @@ export async function tools(rows) {
 /**
  * 维修
  * @param {*} rows
+ * @param {boolean} isAuto 是否是自动执行
  */
-export async function repir(rows, isMine) {
+export async function repir(rows, isAuto) {
   console.log('run repir', rows, getNow());
-  const account = rows[0].account;
-  const comm = new Comm(account);
-  if (!isMine) {
+  const comm = new Comm();
+  if (!isAuto) {
     toast('执行维修');
-    return await comm.repir(rows);
+    return comm.repir(rows);
   }
-  const passes = await getPasses(account);
+  const passes = await getPasses(window.mywax.userAccount);
   const { repirType } = window.gamesConfig.diggers;
   // 选择mine之前维修
   if (repirType === 1) {
     toast('执行维修');
-    await comm[passes ? 'repirAll' : 'repir'](rows);
+    return comm[passes ? 'repirAll' : 'repir'](rows);
   } else {
     // 到0维修,就要判断哪个设备耐久度没了
     const needRows = rows.filter(({ durability }) => !durability);
     if (needRows.length) {
       toast('执行维修');
-      await comm[passes ? 'repirAll' : 'repir'](needRows);
+      return comm[passes ? 'repirAll' : 'repir'](needRows);
     }
   }
 }
@@ -141,7 +145,7 @@ export function deposit(rows) {
           {
             account: 'diggerstoken',
             authorization: [{ actor: owner, permission: 'active' }],
-            data: { 
+            data: {
               from: owner,
               to: gameName,
               memo: 'deposit',
@@ -149,6 +153,36 @@ export function deposit(rows) {
               quantities
             },
             name: 'transfers'
+          }
+        ]
+      })
+    );
+  });
+  return Promise.all(all);
+}
+
+/**
+ * 建造
+ * @param {array} rows
+ * @returns
+ */
+export function build(rows) {
+  console.log('run build', rows);
+  const owner = window.mywax.userAccount;
+  const gameName = window.gameName;
+  toast('进行建造操作');
+  const all = [];
+  rows.forEach(() => {
+    all.push(
+      wax_transact({
+        actions: [
+          {
+            account: gameName,
+            authorization: [{ actor: owner, permission: 'active' }],
+            data: {
+              asset_owner: owner
+            },
+            name: 'build'
           }
         ]
       })
