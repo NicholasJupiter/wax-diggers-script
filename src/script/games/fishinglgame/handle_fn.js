@@ -78,7 +78,7 @@ export function buyBait(rows) {
     buyBaitAmount = rows[0].buyBaitAmount;
   } else {
     buyBaitId = window.gamesConfig.fishing.buyBaitId;
-    buyBaitAmount = window.gamesConfig.fishing.buyBaitId;
+    buyBaitAmount = window.gamesConfig.fishing.buyBaitAmount;
   }
   const bait = new Bait();
   return bait.buy(Number(buyBaitAmount), Number(buyBaitId));

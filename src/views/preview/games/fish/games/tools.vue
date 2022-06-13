@@ -150,7 +150,7 @@ export default {
         }
 
         if (Object.keys(mines).length && this.gamesConfig.fishing.tools.open) {
-          this.sendMessage({
+          sendMessage({
             type: 'run',
             data: mines
           });

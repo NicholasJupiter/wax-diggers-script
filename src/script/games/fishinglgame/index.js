@@ -12,7 +12,7 @@ window.__autoScriptHandlers.push((msg) => {
 });
 
 window.mywax = new waxjs.WaxJS({
-  rpcEndpoint: 'https://wax.greymass.com'
+  rpcEndpoint: 'https://chain.wax.io'
 });
 
 setTimeout(() => {
