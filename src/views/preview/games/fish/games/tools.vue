@@ -5,7 +5,7 @@
       <div class="operation">
         <span>
           自动运行：
-          <el-switch v-model="gamesConfig.fishing.tools.open"></el-switch>
+          <el-switch v-model="gamesConfig.fishing.tools_open"></el-switch>
         </span>
         <el-button @click="getAccounts" :disabled="loading" type="text" icon="el-icon-refresh">
           刷新数据
@@ -149,7 +149,7 @@ export default {
           }
         }
 
-        if (Object.keys(mines).length && this.gamesConfig.fishing.tools.open) {
+        if (Object.keys(mines).length && this.gamesConfig.fishing.tools_open) {
           sendMessage({
             type: 'run',
             data: mines

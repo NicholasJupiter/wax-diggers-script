@@ -36,9 +36,9 @@ export async function repir(rows, isAuto) {
     return comm.repir(rows);
   }
   const passes = await getPasses(window.mywax.userAccount);
-  const { repirType } = window.gamesConfig.diggers;
+  const { tools_repirType } = window.gamesConfig.diggers;
   // 选择mine之前维修
-  if (repirType === 1) {
+  if (tools_repirType === 1) {
     toast('执行维修');
     return comm[passes ? 'repirAll' : 'repir'](rows);
   } else {
@@ -162,7 +162,7 @@ export function deposit(rows) {
 }
 
 /**
- * 建造
+ * 建造小推车
  * @param {array} rows
  * @returns
  */
@@ -190,3 +190,94 @@ export function build(rows) {
   });
   return Promise.all(all);
 }
+
+/**
+ * 推车-选择开始 长短
+ * {row.isShort} true 短， false 长
+ */
+export function startjourney(rows) {
+  const all = [];
+  const owner = window.mywax.userAccount;
+  const gameName = window.gameName;
+  for (const row of rows) {
+    all.push(
+      wax_transact({
+        actions: [
+          {
+            account: gameName,
+            authorization: [{ actor: owner, permission: 'active' }],
+            data: {
+              asset_owner: owner,
+              short_j: row.isShort
+            },
+            name: 'startjourney'
+          }
+        ]
+      })
+    );
+  }
+  return Promise.all(all);
+}
+
+
+
+/**
+ * 开始推车
+ */
+export function pushTrolley(rows) {
+  const all = [];
+  const owner = window.mywax.userAccount;
+  const gameName = window.gameName;
+  for (const row of rows) {
+    all.push(
+      wax_transact({
+        actions: [
+          {
+            account: 'atomicassets',
+            authorization: [{ actor: owner, permission: 'active' }],
+            data: {
+              from: owner,
+              asset_ids: [row.asset_id],
+              memo:'push',
+              to: gameName
+            },
+            name: 'transfer'
+          }
+        ]
+      })
+    );
+  }
+  return Promise.all(all);
+}
+
+
+/**
+ * 购买东西
+ * @param {*} rows 
+ * @returns 
+ */
+export function buy(rows) {
+  const all = [];
+  const owner = window.mywax.userAccount;
+  const gameName = window.gameName;
+  for (const row of rows) {
+    all.push(
+      wax_transact({
+        actions: [
+          {
+            account: gameName,
+            authorization: [{ actor: owner, permission: 'active' }],
+            data: {
+              player: owner,
+              template_id: row.template_id
+            },
+            name: 'buy'
+          }
+        ]
+      })
+    );
+  }
+  return Promise.all(all);
+}
+
+

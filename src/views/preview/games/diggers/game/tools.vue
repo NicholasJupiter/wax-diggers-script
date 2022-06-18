@@ -5,7 +5,7 @@
       <div class="operation">
         <div>
           自动运行:
-          <el-switch v-model="gamesConfig.diggers.tools.open" />
+          <el-switch v-model="gamesConfig.diggers.tools_open" />
         </div>
         <el-button type="text" @click="configVisible = true">配置</el-button>
         <el-button
@@ -179,7 +179,7 @@ export default {
             mines.push(row);
           }
         }
-        if (mines.length && this.gamesConfig.diggers.tools.open) {
+        if (mines.length && this.gamesConfig.diggers.tools_open) {
           sendMessage({
             type: 'run',
             data: { tools: mines }

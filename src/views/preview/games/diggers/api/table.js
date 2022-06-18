@@ -1,5 +1,6 @@
 import { obser } from '@/store/light';
 import { getBalancesObj } from '@/utils/util';
+import { getAsset } from '@/wax/atom_asset';
 import { GetWaxTableRows } from '@/wax/table_row';
 import { getZh } from '../config/constant';
 
@@ -112,4 +113,46 @@ export async function GetAllRushConfig() {
     return ret.rows;
   }
   return [];
+}
+
+/**
+ * 获取背包的煤炭
+ */
+export async function getBagCoals() {
+  const { waxname } = obser;
+  const asset = await getAsset({
+    page: 1,
+    limit: 100,
+    owner: waxname,
+    collection_name: 'diggersworld',
+    schema_name: 'bags'
+  }).then((res) => {
+    if (res.success) {
+      return res.data.filter((v) => Number(v.template.template_id) === 530552);
+    }
+    return [];
+  });
+  return asset;
+  // const ret = await GetWaxTableRows({
+  //   code: gamename,
+  //   index_position: 1,
+  //   json: true,
+  //   key_type: '',
+  //   limit: 100,
+  //   lower_bound: null,
+  //   reverse: false,
+  //   scope: gamename,
+  //   show_payer: false,
+  //   table: 'rushconfig',
+  //   upper_bound: null
+  // });
+  // if (ret.rows) {
+  //   ret.rows.forEach((row) => {
+  //     row._build_price = getBalancesObj(row.build_price);
+  //     row._long_reward = getBalancesObj(row.long_reward);
+  //     row._short_reward = getBalancesObj(row.short_reward);
+  //   });
+  //   return ret.rows;
+  // }
+  // return [];
 }

@@ -3,7 +3,7 @@
     <el-dialog title="脚本配置" :visible.sync="selfVisible" width="80%">
       <el-form label-width="100px">
         <el-form-item label="维修方式">
-          <el-radio-group v-model="config.repirType">
+          <el-radio-group v-model="config.tools_repirType">
             <el-radio :label="0">耐久度到0执行</el-radio>
             <el-radio :label="1">Mine之前执行</el-radio>
           </el-radio-group>
@@ -22,7 +22,7 @@ export default {
   name: 'ConfigDialog',
   data() {
     return {
-      config: { ...gamesConfig.diggers.tools }
+      config: { ...gamesConfig.diggers }
     };
   },
   props: {
@@ -34,7 +34,7 @@ export default {
   watch: {
     value(val) {
       if (val) {
-        this.config = { ...gamesConfig.diggers.tools };
+        this.config = { ...gamesConfig.diggers };
       }
     }
   },
