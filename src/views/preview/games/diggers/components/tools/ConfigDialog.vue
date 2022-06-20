@@ -51,7 +51,7 @@ export default {
   created() {},
   methods: {
     confirm() {
-      this.$mergeForm(gamesConfig.diggers.tools, this.config);
+      this.$mergeForm(gamesConfig.diggers, this.config);
       this.$message.success('保存成功！');
       this.selfVisible = false;
     }

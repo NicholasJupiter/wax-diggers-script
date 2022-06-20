@@ -88,7 +88,7 @@ import ConfigDialog from '../components/trolley/ConfigDialog.vue';
 
 export default {
   name: 'TrolleyTable',
-  components: {ConfigDialog},
+  components: { ConfigDialog },
   data() {
     return {
       COINS,
@@ -177,7 +177,7 @@ export default {
       const { rows } = await getUserTrolley();
       if (rows.length) {
         rows.forEach((row) => {
-          row.__max_push_conter = row.journey_type === 'short' ? 24 : 60;
+          row.__max_push_conter = row.journey_type ? (row.journey_type === 'short' ? 24 : 60) : 0;
           row.prop = {
             __name: '手推车',
             ...this.obser.games.diggers.allRush[0]
@@ -204,20 +204,33 @@ export default {
           // false 建造 true推车
           const type = row.build_counter === row.prop.build_count ? true : false;
           if (actionZero) {
-            if (!type) { // 进行建造
+            // 进行建造
+            if (!type) {
               // 获取余额
               const balances = await getUserBalances();
               const isSati = this.satisfyBuildBalances(balances, row.prop._build_price);
               isSati && this.setRunData(mines, 'build', row);
-            } else if (row.journey_type) { // type存在 进行推车
-              this.coals = await getBagCoals();
-              if (this.coals.length) {
-                this.setRunData(mines, 'pushTrolley', { ...row, asset_id: this.coals[0].asset_id });
+            } else if (row.journey_type) {
+              // type存在 进行推车
+              // 次数满了
+              if (row.__max_push_conter === row.push_counter) {
+                this.setRunData(mines, 'claimjourney', { ...row });
               } else {
-                this.setRunData(mines, 'buy', { ...row, template_id: 530552 });
+                this.coals = await getBagCoals();
+                if (this.coals.length) {
+                  this.setRunData(mines, 'pushTrolley', {
+                    ...row,
+                    asset_id: this.coals[0].asset_id
+                  });
+                } else {
+                  this.setRunData(mines, 'buy', { ...row, template_id: 530552 });
+                }
               }
-            } else { // 选择短期&长期
-              this.setRunData(mines, 'startjourney', { isShort: this.gamesConfig.diggers.trolley_isShort });
+            } else {
+              // 选择短期&长期
+              this.setRunData(mines, 'startjourney', {
+                isShort: this.gamesConfig.diggers.trolley_isShort
+              });
             }
           }
         }

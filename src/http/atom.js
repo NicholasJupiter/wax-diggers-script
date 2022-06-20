@@ -16,16 +16,7 @@ axios.interceptors.response.use(
   },
   (err) => {
     const config = err.config;
-    config.__retryCount = config.__retryCount || 0;
-    config.__retryCount += 1;
-
-    if (config.url.includes('/v1/asset/')) {
-      if (!baseurls[config.__retryCount]) {
-        config.__retryCount = 0;
-      }
-      config.url = config.url.replace(/https?:\/\/[^\/]*/g, baseurls[config.__retryCount]);
-    }
-    console.log(config.url + ' 自动重试第' + config.__retryCount + '次');
+    console.log(config.url + ' 自动重试');
     // 返回重试请求
     return sleep(5000).then(() => axios(config));
   }

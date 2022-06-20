@@ -219,7 +219,32 @@ export function startjourney(rows) {
   return Promise.all(all);
 }
 
-
+/**
+ * 推车收获，次数满了执行
+ * @param {*} rows
+ */
+export function claimjourney(rows) {
+  const all = [];
+  const owner = window.mywax.userAccount;
+  const gameName = window.gameName;
+  for (const row of rows) {
+    all.push(
+      wax_transact({
+        actions: [
+          {
+            account: gameName,
+            authorization: [{ actor: owner, permission: 'active' }],
+            data: {
+              asset_owner: owner
+            },
+            name: 'claimjourney'
+          }
+        ]
+      })
+    );
+  }
+  return Promise.all(all);
+}
 
 /**
  * 开始推车
@@ -238,7 +263,7 @@ export function pushTrolley(rows) {
             data: {
               from: owner,
               asset_ids: [row.asset_id],
-              memo:'push',
+              memo: 'push',
               to: gameName
             },
             name: 'transfer'
@@ -250,11 +275,10 @@ export function pushTrolley(rows) {
   return Promise.all(all);
 }
 
-
 /**
  * 购买东西
- * @param {*} rows 
- * @returns 
+ * @param {*} rows
+ * @returns
  */
 export function buy(rows) {
   const all = [];
@@ -279,5 +303,3 @@ export function buy(rows) {
   }
   return Promise.all(all);
 }
-
-
