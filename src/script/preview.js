@@ -48,7 +48,7 @@ export function appendiFrame(params) {
     }, 10000);
     return;
   }
-  toast('脚本运行成功!');
+  toast('登录成功，脚本运行成功');
   let src =
     process.env.iframeUrl +
     queryParams({

@@ -1,8 +1,9 @@
-import { appendiFrame } from './preview';
 import { getNow } from '@/utils/time';
 import { wax_login, wax_transact } from './wax/wax_event';
 import { toast } from './toast/index';
-import { getQueryString } from '@/utils/util';
+import { getQueryString, randomRange, testingRpc } from '@/utils/util';
+import * as waxjs from '@waxio/waxjs/dist';
+import { closeLoading, showLoading } from './toast/loading';
 
 if (typeof window === 'object') {
   window.wax_login = wax_login;
@@ -13,16 +14,28 @@ if (typeof window === 'object') {
   window.setGameName = (name) => {
     window.gameName = name;
   };
-  toast('脚本加载中!', getNow());
 
+  toast('脚本加载中!', getNow());
   if (process.env.NODE_ENV === 'development') {
     window.gameName = getQueryString('gamename');
   }
 
-  window.addEventListener('load', () => {
+  window.addEventListener('load', async () => {
     console.log(process.env, window.gameName);
     if (window.gameName) {
-      require(`./games/${window.gameName}/index.js`);
+      showLoading('加载可用rpc节点中...');
+      const urls = await testingRpc();
+      closeLoading();
+      if (urls.length) {
+        window.__waxUrls = urls;
+        // new wax
+        window.mywax = new waxjs.WaxJS({
+          rpcEndpoint: urls[randomRange(0, urls.length - 1)]
+        });
+        require(`./games/${window.gameName}/index.js`);
+      } else {
+        alert('所有eos rpc节点访问失败，请更换vpn节点并刷新界面');
+      }
     }
   });
 

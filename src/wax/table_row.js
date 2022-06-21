@@ -1,8 +1,5 @@
 import axios from '@/http/wax.js';
 import { obser } from '@/store/light';
-
-const talbeBaseUrl = 'https://chain.wax.io/v1/chain'; // /get_table_rows';
-
 /**
  * 获取wax table_row资源
  * @param {object} rowData
@@ -26,7 +23,7 @@ export async function GetWaxTableRows(rowData) {
   if (rowData && typeof rowData === 'object') {
     Object.assign(data, rowData);
   }
-  return axios.post(talbeBaseUrl + '/get_table_rows', data);
+  return axios.post('/v1/chain/get_table_rows', data);
 }
 
 /**

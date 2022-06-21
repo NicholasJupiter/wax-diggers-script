@@ -1,4 +1,6 @@
-import { gamesConfig } from "@/store/light";
+import { gamesConfig } from '@/store/light';
+import axios from 'axios';
+import { EOS_BASE_URLS } from './constant';
 
 /**
  * 序列化参数
@@ -59,4 +61,28 @@ export function sendMessage(msg) {
     window.parent.postMessage(data, '*');
     return;
   }
+}
+
+/**
+ * 随机区间数
+ * @param {number} min
+ * @param {number} max
+ * @returns
+ */
+export function randomRange(min = 0, max = 100) {
+  return Math.round(Math.random() * (max - min)) + min;
+}
+
+/**
+ * 测试有用节点
+ * @returns {string[]} 节点列表
+ */
+export function testingRpc() {
+  const all = [];
+  EOS_BASE_URLS.forEach((url) => {
+    all.push(axios.post(`${url}/v1/chain/get_info`));
+  });
+  return Promise.allSettled(all).then((res) =>
+    res.filter((r) => r.value).map((r) => r.value.config.url.match(/https?:\/\/[^/]*/)[0])
+  );
 }

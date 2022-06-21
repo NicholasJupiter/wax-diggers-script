@@ -30,12 +30,12 @@ export function wax_transact(transaction) {
   return new Promise(async (resolve, reject) => {
     try {
       await wax_login();
-      console.log('push', transaction);
-      const result = await window.mywax.api.transact(transaction, {
+      console.log('transact, 1分钟超时', transaction);
+      const result = await promiseTimeout(window.mywax.api.transact(transaction, {
         blocksBehind: 3,
         expireSeconds: 1200
-      });
-      console.log('push->执行成功：', result);
+      }), 60000);
+      console.log('transact->执行成功：', result);
       toast('执行成功');
       resolve({
         success: true,

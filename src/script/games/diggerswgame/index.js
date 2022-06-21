@@ -3,19 +3,13 @@ import { toast } from '@/script/toast';
 import { wax_login } from '@/script/wax/wax_event';
 import { sendIframe } from '@s/msg';
 import * as runFn from './handle_fn';
-import * as waxjs from '@waxio/waxjs/dist';
-
-// new wax
-window.mywax = new waxjs.WaxJS({
-  rpcEndpoint: 'https://diggersworld-wax-rpc.global.binfra.one'
-});
 setTimeout(() => {
   appendiFrame({
     collection_name: 'diggersworld'
   });
 }, 2000);
-toast('进行登录。。。');
 
+toast('进行登录。。。');
 wax_login();
 
 window.__autoScriptHandlers.push((msg) => {

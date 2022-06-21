@@ -11,18 +11,13 @@ window.__autoScriptHandlers.push((msg) => {
   }
 });
 
-window.mywax = new waxjs.WaxJS({
-  rpcEndpoint: 'https://chain.wax.io'
-});
-
 setTimeout(() => {
   appendiFrame({
-    collection_name: 'diggersworld'
+    collection_name: 'fishinglands'
   });
 }, 2000);
 
 toast('进行登录。。。');
-
 wax_login();
 
 /**
@@ -38,7 +33,7 @@ async function handler_run(data) {
       ret.push(runFn[key](rows));
     }
   }
-  await Promise.all(ret);
+  await Promise.allSettled(ret);
   setTimeout(() => {
     sendIframe({
       type: 'reload'

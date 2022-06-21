@@ -1,4 +1,5 @@
 import $ from 'jquery';
+
 const toastStyle = `
 <style class="auto-toast-style">
 #toast-list {
@@ -52,5 +53,4 @@ export function toast(msg, delay = 2000) {
     $(`.auto-toast[data-id='${time}']`).remove();
   }, delay);
 }
-
 

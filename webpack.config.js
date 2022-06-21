@@ -32,6 +32,21 @@ module.exports = {
       node_modules: path.resolve(__dirname, 'node_modules/')
     }
   },
+  module: {
+    rules: [
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: 'images/[name].[ext]'
+            }
+          }
+        ]
+      }
+    ]
+  },
   devServer: {
     hot: true,
     port: 8000
