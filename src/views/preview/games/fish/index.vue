@@ -2,7 +2,7 @@
   <div class="fish-preview">
     <div class="fish-head">
       <div class="left">
-        <Balance :fn="_getUserBalances"></Balance>
+        <Balance :fn="_getUserBalances" collectionName="fishingcoins"></Balance>
       </div>
       <div class="right">
         <el-button type="text" @click="knapsackVisible = true"> 背包 </el-button>

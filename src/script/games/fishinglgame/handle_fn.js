@@ -1,4 +1,5 @@
 import { toast } from '@/script/toast';
+import { wax_transact } from '@/script/wax/wax_event';
 import { sleep } from '@/utils/time';
 import { getFishers, getInUseBaits } from './table_row';
 import { Bait } from './transact/bait';
@@ -104,27 +105,21 @@ export function withdraw(rows) {
   const owner = window.mywax.userAccount;
   const gameName = window.gameName;
   toast('进行提现操作');
-  const all = [];
+  const actions = [];
   rows.forEach((row) => {
     const quantities = Object.keys(row).reduce((ret, val) => {
       const amount = Number(row[val]).toFixed(4);
       ret.push(`${amount} ${val}`);
       return ret;
     }, []);
-    all.push(
-      wax_transact({
-        actions: [
-          {
-            account: gameName,
-            authorization: [{ actor: owner, permission: 'active' }],
-            data: { owner: owner, assets: quantities },
-            name: 'withdraw'
-          }
-        ]
-      })
-    );
+    actions.push({
+      account: gameName,
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: { owner: owner, assets: quantities },
+      name: 'withdraw'
+    });
   });
-  return Promise.all(all);
+  return wax_transact({ actions });
 }
 
 /**
@@ -136,7 +131,7 @@ export function deposit(rows) {
   const owner = window.mywax.userAccount;
   const gameName = window.gameName;
   toast('进行充值操作');
-  const all = [];
+  const actions = [];
   rows.forEach((row) => {
     const quantities = Object.keys(row).reduce((ret, val) => {
       const amount = Number(row[val]).toFixed(4);
@@ -145,24 +140,18 @@ export function deposit(rows) {
       }
       return ret;
     }, []);
-    all.push(
-      wax_transact({
-        actions: [
-          {
-            account: 'fishingcoins',
-            authorization: [{ actor: owner, permission: 'active' }],
-            data: {
-              from: owner,
-              to: gameName,
-              memo: 'deposit',
-              // memo: 'wax脚本，联系方式WX：Xiong-Yang-Yang',
-              quantities
-            },
-            name: 'transfers'
-          }
-        ]
-      })
-    );
+    actions.push({
+      account: 'fishingcoins',
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: {
+        from: owner,
+        to: gameName,
+        memo: 'deposit',
+        // memo: 'wax脚本，联系方式WX：Xiong-Yang-Yang',
+        quantities
+      },
+      name: 'transfers'
+    });
   });
-  return Promise.all(all);
+  return wax_transact({ actions });
 }

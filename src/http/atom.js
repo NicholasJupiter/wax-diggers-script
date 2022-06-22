@@ -5,8 +5,6 @@ const axios = Axios.create({
   baseURL: 'https://wax.api.atomicassets.io'
 });
 
-const baseurls = ['https://wax.api.atomicassets.io'];
-
 axios.interceptors.response.use(
   (res) => {
     if (res.data) {
@@ -16,7 +14,7 @@ axios.interceptors.response.use(
   },
   (err) => {
     const config = err.config;
-    console.log(config.url + ' 自动重试');
+    console.log(`自动重试Url: ${config.url}`, config);
     // 返回重试请求
     return sleep(5000).then(() => axios(config));
   }

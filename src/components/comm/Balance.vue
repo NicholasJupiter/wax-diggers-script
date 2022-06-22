@@ -20,7 +20,11 @@
       </div>
       <div class="amount-item" v-for="item of balances" :key="item.icon">
         <span>{{ item.token }}</span>
-        <span><img :src="item.icon" class="icon-currency" /></span>
+        <span>
+          <a :href="$alcorHref(item.name, collectionName)" target="_blank">
+            <img :src="item.icon" class="icon-currency" />
+          </a>
+        </span>
         <span>{{ item.game }}</span>
       </div>
     </div>
@@ -42,7 +46,10 @@ export default {
   },
   props: {
     fn: {
-      type: Function,
+      type: Function
+    },
+    collectionName: {
+      type: String,
     }
   },
   async created() {
@@ -69,12 +76,13 @@ export default {
   &:hover {
     box-shadow: 0 0 10px rgb(204 204 204 / 50%);
   }
-  span {
+  span{
     display: inline-block;
     width: 33%;
     text-align: center;
     font-size: 14px;
   }
+
   .footer {
     text-align: center;
   }

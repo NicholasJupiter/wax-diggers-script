@@ -55,7 +55,7 @@ export async function repir(rows, isAuto) {
 export async function stake(rows) {
   console.log('run stake', rows, getNow());
   toast('穿戴装备');
-  const owner = rows[0].owner;
+  const owner = window.mywax.userAccount;
   const asset_ids = rows.map((v) => v.asset_id);
   return await wax_transact({
     actions: [
@@ -94,9 +94,8 @@ export async function unstake(rows) {
 export function withdraw(rows) {
   console.log('run withdraw', rows);
   const owner = window.mywax.userAccount;
-  const gameName = window.gameName;
   toast('进行提现操作');
-  const all = [];
+  const actions = [];
   rows.forEach((row) => {
     const quantities = Object.keys(row).reduce((ret, val) => {
       const amount = Number(row[val]).toFixed(4);
@@ -105,20 +104,16 @@ export function withdraw(rows) {
       }
       return ret;
     }, []);
-    all.push(
-      wax_transact({
-        actions: [
-          {
-            account: gameName,
-            authorization: [{ actor: owner, permission: 'active' }],
-            data: { owner: owner, quantities },
-            name: 'withdraw'
-          }
-        ]
-      })
-    );
+    actions.push({
+      account: window.gameName,
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: { owner: owner, quantities },
+      name: 'withdraw'
+    });
   });
-  return Promise.all(all);
+  return wax_transact({
+    actions
+  });
 }
 
 /**
@@ -128,9 +123,8 @@ export function withdraw(rows) {
 export function deposit(rows) {
   console.log('run deposit', rows);
   const owner = window.mywax.userAccount;
-  const gameName = window.gameName;
   toast('进行充值操作');
-  const all = [];
+  const actions = [];
   rows.forEach((row) => {
     const quantities = Object.keys(row).reduce((ret, val) => {
       const amount = Number(row[val]).toFixed(4);
@@ -139,26 +133,22 @@ export function deposit(rows) {
       }
       return ret;
     }, []);
-    all.push(
-      wax_transact({
-        actions: [
-          {
-            account: 'diggerstoken',
-            authorization: [{ actor: owner, permission: 'active' }],
-            data: {
-              from: owner,
-              to: gameName,
-              memo: 'deposit',
-              // memo: 'wax脚本，联系方式WX：Xiong-Yang-Yang',
-              quantities
-            },
-            name: 'transfers'
-          }
-        ]
-      })
-    );
+    actions.push({
+      account: 'diggerstoken',
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: {
+        from: owner,
+        to: window.gameName,
+        memo: 'deposit',
+        // memo: 'wax脚本，联系方式WX：Xiong-Yang-Yang',
+        quantities
+      },
+      name: 'transfers'
+    });
   });
-  return Promise.all(all);
+  return wax_transact({
+    actions
+  });
 }
 
 /**
@@ -169,26 +159,19 @@ export function deposit(rows) {
 export function build(rows) {
   console.log('run build', rows);
   const owner = window.mywax.userAccount;
-  const gameName = window.gameName;
   toast('进行建造操作');
-  const all = [];
+  const actions = [];
   rows.forEach(() => {
-    all.push(
-      wax_transact({
-        actions: [
-          {
-            account: gameName,
-            authorization: [{ actor: owner, permission: 'active' }],
-            data: {
-              asset_owner: owner
-            },
-            name: 'build'
-          }
-        ]
-      })
-    );
+    actions.push({
+      account: window.gameName,
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: {
+        asset_owner: owner
+      },
+      name: 'build'
+    });
   });
-  return Promise.all(all);
+  return wax_transact({ actions });
 }
 
 /**
@@ -196,27 +179,20 @@ export function build(rows) {
  * {row.isShort} true 短， false 长
  */
 export function startjourney(rows) {
-  const all = [];
+  const actions = [];
   const owner = window.mywax.userAccount;
-  const gameName = window.gameName;
   for (const row of rows) {
-    all.push(
-      wax_transact({
-        actions: [
-          {
-            account: gameName,
-            authorization: [{ actor: owner, permission: 'active' }],
-            data: {
-              asset_owner: owner,
-              short_j: row.isShort
-            },
-            name: 'startjourney'
-          }
-        ]
-      })
-    );
+    actions.push({
+      account: window.gameName,
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: {
+        asset_owner: owner,
+        short_j: row.isShort
+      },
+      name: 'startjourney'
+    });
   }
-  return Promise.all(all);
+  return wax_transact({ actions });
 }
 
 /**
@@ -224,55 +200,43 @@ export function startjourney(rows) {
  * @param {*} rows
  */
 export function claimjourney(rows) {
-  const all = [];
+  const actions = [];
   const owner = window.mywax.userAccount;
-  const gameName = window.gameName;
   for (const row of rows) {
-    all.push(
-      wax_transact({
-        actions: [
-          {
-            account: gameName,
-            authorization: [{ actor: owner, permission: 'active' }],
-            data: {
-              asset_owner: owner
-            },
-            name: 'claimjourney'
-          }
-        ]
-      })
-    );
+    actions.push({
+      account: window.gameName,
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: {
+        asset_owner: owner
+      },
+      name: 'claimjourney'
+    });
   }
-  return Promise.all(all);
+  return wax_transact({ actions });
 }
 
 /**
  * 开始推车
  */
 export function pushTrolley(rows) {
-  const all = [];
+  const actions = [];
   const owner = window.mywax.userAccount;
-  const gameName = window.gameName;
   for (const row of rows) {
-    all.push(
-      wax_transact({
-        actions: [
-          {
-            account: 'atomicassets',
-            authorization: [{ actor: owner, permission: 'active' }],
-            data: {
-              from: owner,
-              asset_ids: [row.asset_id],
-              memo: 'push',
-              to: gameName
-            },
-            name: 'transfer'
-          }
-        ]
-      })
-    );
+    actions.push({
+      account: 'atomicassets',
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: {
+        from: owner,
+        asset_ids: [row.asset_id],
+        memo: 'push',
+        to: window.gameName
+      },
+      name: 'transfer'
+    });
   }
-  return Promise.all(all);
+  return wax_transact({
+    actions
+  });
 }
 
 /**
@@ -281,25 +245,82 @@ export function pushTrolley(rows) {
  * @returns
  */
 export function buy(rows) {
-  const all = [];
+  const actions = [];
   const owner = window.mywax.userAccount;
-  const gameName = window.gameName;
   for (const row of rows) {
-    all.push(
-      wax_transact({
-        actions: [
-          {
-            account: gameName,
-            authorization: [{ actor: owner, permission: 'active' }],
-            data: {
-              player: owner,
-              template_id: row.template_id
-            },
-            name: 'buy'
-          }
-        ]
-      })
-    );
+    actions.push({
+      account: window.gameName,
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: {
+        player: owner,
+        template_id: row.template_id
+      },
+      name: 'buy'
+    });
   }
-  return Promise.all(all);
+  return wax_transact({
+    actions
+  });
+}
+
+/**
+ * 赌的各种操作
+ */
+
+/**
+ * 赌的第一步
+ */
+export async function unsafemine(rows) {
+  const actions = [];
+  const owner = window.mywax.userAccount;
+  const { tools_betType } = window.gamesConfig.diggers;
+  if (!tools_betType.length) return;
+  toast('开始赌博');
+  const risky = tools_betType[0] === 1;
+  for (const row of rows) {
+    actions.push({
+      account: window.gameName,
+      authorization: [{ actor: owner, permission: 'active' }],
+      data: {
+        asset_owner: owner,
+        asset_id: row.asset_id,
+        risky,
+        signing_value: 0
+      },
+      name: 'unsafemine'
+    });
+  }
+  await wax_transact({ actions });
+  return revealresult(rows);
+}
+
+/**
+ * 获取赌的第二部的actions
+ * @param {*} rows
+ * @returns
+ */
+function getRevealresultActions(row) {
+  const owner = window.mywax.userAccount;
+  return {
+    account: window.gameName,
+    name: 'revealresult',
+    authorization: [{ actor: owner, permission: 'active' }],
+    data: {
+      asset_owner: owner,
+      asset_id: row.asset_id
+    }
+  };
+}
+
+/**
+ * 赌的第二步
+ * @param {*} rows
+ * @returns
+ */
+export function revealresult(rows) {
+  const actions = [];
+  for (const row of rows) {
+    actions.push(getRevealresultActions(row));
+  }
+  return wax_transact({ actions });
 }

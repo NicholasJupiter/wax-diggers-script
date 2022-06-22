@@ -18,8 +18,22 @@ const EOS_BASE_URLS = [
   'https://wax.eosphere.io',
   'https://api.wax.greeneosio.com',
   'https://wax.eu.eosamsterdam.net',
-  'https://wax.eosdsp.com',
   'https://api.wax.bountyblok.io'
 ];
 
-export { GAME_NAME, EOS_BASE_URLS };
+/**
+ * wax 连接
+ */
+const WAX_BASE_URLS = [
+  'https://wax.cryptolions.io',
+  'https://api.wax.alohaeos.com',
+  'https://wax.greymass.com',
+  'https://api.waxsweden.org',
+  'https://wax.pink.gg',
+  'https://wax.dapplica.io',
+  'https://api.wax.greeneosio.com',
+  'https://wax.eu.eosamsterdam.net',
+  'https://api.wax.bountyblok.io'
+];
+
+export { GAME_NAME, EOS_BASE_URLS, WAX_BASE_URLS };

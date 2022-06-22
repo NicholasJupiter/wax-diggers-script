@@ -4,6 +4,7 @@ import { toast } from './toast/index';
 import { getQueryString, randomRange, testingRpc } from '@/utils/util';
 import * as waxjs from '@waxio/waxjs/dist';
 import { closeLoading, showLoading } from './toast/loading';
+import { WAX_BASE_URLS } from '@/utils/constant';
 
 if (typeof window === 'object') {
   window.wax_login = wax_login;
@@ -24,13 +25,16 @@ if (typeof window === 'object') {
     console.log(process.env, window.gameName);
     if (window.gameName) {
       showLoading('加载可用rpc节点中...');
-      const urls = await testingRpc();
+      // const urls = [1];
+      const urls = await testingRpc(WAX_BASE_URLS);
       closeLoading();
       if (urls.length) {
         window.__waxUrls = urls;
         // new wax
         window.mywax = new waxjs.WaxJS({
           rpcEndpoint: urls[randomRange(0, urls.length - 1)]
+          // rpcEndpoint: WAX_BASE_URLS[0]
+          // rpcEndpoint: 'https://wax.hivebp.io'
         });
         require(`./games/${window.gameName}/index.js`);
       } else {

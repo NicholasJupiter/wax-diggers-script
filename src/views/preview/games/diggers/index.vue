@@ -2,7 +2,7 @@
   <div class="diggers-preview">
     <div class="diggers-head flex">
       <div class="balances">
-        <Balance :fn="_getUserBalances"></Balance>
+        <Balance :fn="_getUserBalances" collectionName="diggerstoken"></Balance>
       </div>
       <div class="right flex align-center config">
         <el-button type="text" @click="knapsackVisible = true">背包</el-button>

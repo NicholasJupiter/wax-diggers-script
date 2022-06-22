@@ -51,7 +51,7 @@
 
       <el-table-column label="推车进度">
         <div slot-scope="{ row }">
-          <template v-if="row.prop.build_count !== row.build_counter && row.journey_type">
+          <template v-if="row.prop.build_count !== row.build_counter || !row.journey_type">
             <span style="color: #f56c6c">未开始推车</span>
           </template>
           <template v-else>

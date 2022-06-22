@@ -1,4 +1,5 @@
 import axios from '@/http/wax.js';
+import AtomAxios from '@/http/atom.js';
 import { obser } from '@/store/light';
 /**
  * 获取wax table_row资源
@@ -33,7 +34,9 @@ export async function GetWaxTableRows(rowData) {
  */
 export async function GetWalletBalances(currencys = []) {
   const { owner } = obser;
-  const walletRet = await axios.get('https://lightapi.eosamsterdam.net/api/balances/wax/' + owner);
+  const walletRet = await AtomAxios.get(
+    'https://lightapi.eosamsterdam.net/api/balances/wax/' + owner
+  );
   return currencys.reduce((ret, currency) => {
     ret[currency] = walletRet.balances.find((v) => v.currency === currency)?.amount || 0;
     return ret;
@@ -46,11 +49,9 @@ export async function GetWalletBalances(currencys = []) {
  * @returns
  */
 export function GetWaxAccount(waxName) {
-  return axios
-    .post('https://chain.wax.io/v1/chain/get_account', { account_name: waxName })
-    .then((res) => {
-      res.cpu_limit.calc =
-        Math.ceil(((res.cpu_limit.max - res.cpu_limit.available) / res.cpu_limit.max) * 100) || 0;
-      return res;
-    });
+  return axios.post('/v1/chain/get_account', { account_name: waxName }).then((res) => {
+    res.cpu_limit.calc =
+      Math.ceil(((res.cpu_limit.max - res.cpu_limit.available) / res.cpu_limit.max) * 100) || 0;
+    return res;
+  });
 }

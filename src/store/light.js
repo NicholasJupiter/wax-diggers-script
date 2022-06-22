@@ -20,6 +20,9 @@ const gamesConfig = Vue.observable({
   diggers: {
     tools_open: true,
     tools_repirType: 0, // 0: 耐久度到0维修，1: 运行前维修
+    tools_betType: [], // 赌
+    tools_betEquip: [], // 使用什么类型的装备
+    tools_betRarity: [], // 使用什么稀有度的装备
     trolley_open: true,
     trolley_isShort: true // fals长期，true短期
   },

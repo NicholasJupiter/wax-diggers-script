@@ -160,6 +160,7 @@ export default {
         });
         rows.sort((v, n) => (v.template_id > n.template_id ? -1 : 0));
       }
+      console.log(rows);
       this.tableRows = rows;
       this.loading = false;
     },
@@ -170,16 +171,39 @@ export default {
     updatestime() {
       const { tableRows } = this;
       this.updateStimeInter = setTimeout(() => {
+        const { tools_betType, tools_betEquip, tools_betRarity } = this.gamesConfig.diggers;
         const mines = [];
         for (const row of tableRows) {
+          const { template_name, rarity, init_durability } = row.prop;
           const { zero, text } = getDifferenceTime(row.next_mine * 1000);
           this.$set(row, 'zero', zero);
           this.$set(row, 'nextTimeText', text);
-          if (zero) {
+          if (zero && this.gamesConfig.diggers.tools_open) {
+            // 有装备需要赌
+            if (tools_betType.length) {
+              // 判断是需要赌的装备
+              if (
+                tools_betEquip.includes(template_name.toLowerCase()) &&
+                tools_betRarity.includes(rarity.toLowerCase())
+              ) {
+                if (init_durability === row.durability) {
+                  sendMessage({
+                    type: 'run',
+                    data: { unsafemine: [row] }
+                  });
+                } else {
+                  sendMessage({
+                    type: 'run',
+                    data: { repir: [row] }
+                  });
+                }
+                return;
+              }
+            }
             mines.push(row);
           }
         }
-        if (mines.length && this.gamesConfig.diggers.tools_open) {
+        if (mines.length) {
           sendMessage({
             type: 'run',
             data: { tools: mines }
@@ -200,12 +224,12 @@ export default {
      */
     testSendMsg() {
       const mines = [];
-      for (const row of this.tableRows) {
-        mines.push(row);
-      }
+      // for (const row of this.tableRows) {
+      //   mines.push(row);
+      // }
       sendMessage({
         type: 'run',
-        data: { tools: mines }
+        data: { unsafemine: [this.tableRows[0]] }
       });
     }
   }

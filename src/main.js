@@ -1,11 +1,10 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router/index';
-import moment from 'moment';
 import VueRouter from 'vue-router';
 import ElementUi from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import { padStartZero } from './utils/time';
+import '@/mixins/util';
 
 Vue.config.productionTip = false;
 
