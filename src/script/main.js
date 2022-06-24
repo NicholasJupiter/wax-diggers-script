@@ -5,6 +5,7 @@ import { getQueryString, randomRange, testingRpc } from '@/utils/util';
 import * as waxjs from '@waxio/waxjs/dist';
 import { closeLoading, showLoading } from './toast/loading';
 import { WAX_BASE_URLS } from '@/utils/constant';
+import { appendiFrame as _appendiFrame } from './preview';
 
 if (typeof window === 'object') {
   window.wax_login = wax_login;
@@ -33,10 +34,13 @@ if (typeof window === 'object') {
         // new wax
         window.mywax = new waxjs.WaxJS({
           rpcEndpoint: urls[randomRange(0, urls.length - 1)]
-          // rpcEndpoint: WAX_BASE_URLS[0]
-          // rpcEndpoint: 'https://wax.hivebp.io'
         });
+        toast('进行登录。。。');
+        await wax_login();
         require(`./games/${window.gameName}/index.js`);
+        setTimeout(() => {
+          _appendiFrame({});
+        }, 2000);
       } else {
         alert('所有eos rpc节点访问失败，请更换vpn节点并刷新界面');
       }

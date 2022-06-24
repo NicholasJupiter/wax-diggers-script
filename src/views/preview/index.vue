@@ -18,7 +18,9 @@
 import { gamesConfig, handleSubs, obser } from '@/store/light';
 import Diggers from './games/diggers/index.vue';
 import Fishing from './games/fish/index.vue';
+import Galactic from './games/galactic/index.vue';
 import { GAME_NAME } from '@/utils/constant';
+
 
 if (process.env.NODE_ENV === 'development') {
   require('@s/main');
@@ -27,7 +29,8 @@ if (process.env.NODE_ENV === 'development') {
 export default {
   components: {
     diggerswgame: Diggers,
-    fishinglgame: Fishing
+    fishinglgame: Fishing,
+    galacticgame: Galactic,
   },
   data() {
     return {
@@ -58,7 +61,7 @@ export default {
       localStorage.setItem('gamesConfig', JSON.stringify(gamesConfig));
     } else {
       const config = JSON.parse(localStorage.getItem('gamesConfig'));
-      Object.keys(gamesConfig).forEach((key) => {
+      Object.keys(config).forEach((key) => {
         this.$mergeForm(gamesConfig[key], config[key]);
       });
     }
@@ -67,8 +70,9 @@ export default {
     });
     this.obser.owner = this.$route.query.waxname;
     if (!this.obser.gamename) {
-      location.href += '?waxname=j4vym.wam&gamename=diggerswgame&collection_name=diggersworld';
-      // location.href += '?waxname=j4vym.wam&gamename=fishinglgame&collection_name=fishinglands';
+      // location.href += '?waxname=j4vym.wam&gamename=diggerswgame';
+      location.href += '?waxname=j4vym.wam&gamename=galacticgame';
+      // location.href += '?waxname=j4vym.wam&gamename=fishinglgame';
 
       location.reload();
       return;

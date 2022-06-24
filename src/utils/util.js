@@ -1,6 +1,6 @@
 import { gamesConfig } from '@/store/light';
 import axios from 'axios';
-import { EOS_BASE_URLS } from './constant';
+import { EOS_BASE_URLS, WAX_BASE_URLS } from './constant';
 
 /**
  * 序列化参数
@@ -77,17 +77,15 @@ export function randomRange(min = 0, max = 100) {
  * 测试有用节点
  * @returns {string[]} 节点列表
  */
-export function testingRpc(urls = EOS_BASE_URLS) {
-  const all = [];
-  urls.forEach((url) => {
-    axios.request({
-      method:'post',
+export function testingRpc(urls = WAX_BASE_URLS) {
+  const all = urls.map((url) => {
+    return axios.request({
+      method: 'post',
       url: `${url}/v1/chain/get_info`,
-      timeout: 5000
-    })
-    all.push(axios.post(`${url}/v1/chain/get_info`));
+      timeout: 10000
+    });
   });
   return Promise.allSettled(all).then((res) =>
-      res.filter((r) => r.value).map((r) => r.value.config.url.match(/https?:\/\/[^/]*/)[0])
+    res.filter((r) => r.value).map((r) => r.value.config.url.match(/https?:\/\/[^/]*/)[0])
   );
 }

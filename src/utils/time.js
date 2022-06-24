@@ -37,11 +37,12 @@ export function getNow() {
 
 /**
  * 计算时间差
- * @param {*} nextTime
+ * @param {*} nextTime 下一个时间
+ * @param {*} afterTime 上一个时间 默认是now()
  * @returns
  */
-export function getDifferenceTime(nextTime) {
-  const now = moment();
+export function getDifferenceTime(nextTime, afterTime = Date.now()) {
+  const now = moment(afterTime);
   const next = moment(nextTime);
   const diff = moment.duration(next - now);
   const hh = diff.hours(),

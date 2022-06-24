@@ -30,7 +30,7 @@
                 <el-checkbox label="common">常见(白色)</el-checkbox>
                 <el-checkbox label="rare">稀有(蓝色)</el-checkbox>
                 <el-checkbox label="epic">史诗(紫色)</el-checkbox>
-                <el-checkbox label="legendary">传说(橙色)</el-checkbox>
+                <el-checkbox label="legendary" disabled>传说(橙色)</el-checkbox>
               </el-checkbox-group>
             </div></template
           >

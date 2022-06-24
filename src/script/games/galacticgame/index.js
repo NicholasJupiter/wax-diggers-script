@@ -1,4 +1,4 @@
-import { sendIframe } from '@s/msg';
+import { sendIframe } from '@/script/msg';
 import * as runFn from './handle_fn';
 
 window.__autoScriptHandlers.push((msg) => {
@@ -9,7 +9,8 @@ window.__autoScriptHandlers.push((msg) => {
 });
 
 /**
- * 监听
+ * 运行
+ * @param {*} data
  */
 async function handler_run(data) {
   // 循环

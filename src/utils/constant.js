@@ -1,6 +1,7 @@
 const GAME_NAME = {
   fishinglgame: '钓鱼世界',
-  diggerswgame: '挖掘机世界'
+  diggerswgame: '挖掘机世界',
+  galacticgame: '傻逼魔兽'
 };
 
 /**
@@ -12,7 +13,6 @@ const EOS_BASE_URLS = [
   'https://wax.hivebp.io',
   'https://api.wax.alohaeos.com',
   'https://wax.greymass.com',
-  'https://api.waxsweden.org',
   'https://wax.pink.gg',
   'https://wax.dapplica.io',
   'https://wax.eosphere.io',
@@ -28,7 +28,6 @@ const WAX_BASE_URLS = [
   'https://wax.cryptolions.io',
   'https://api.wax.alohaeos.com',
   'https://wax.greymass.com',
-  'https://api.waxsweden.org',
   'https://wax.pink.gg',
   'https://wax.dapplica.io',
   'https://api.wax.greeneosio.com',

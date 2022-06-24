@@ -32,6 +32,9 @@ const gamesConfig = Vue.observable({
     useBaitAmount: 1,
     buyBaitId: 1000, // 购买鱼饵id
     buyBaitAmount: 1
+  },
+  galactic: {
+    mine_open: true
   }
 });
 
