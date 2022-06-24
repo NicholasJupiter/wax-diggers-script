@@ -4,6 +4,7 @@
       <h2>手推车</h2>
       <p style="margin-left: 16px">
         煤包数量：{{ coals.length }}
+        <el-checkbox v-model="gamesConfig.diggers.trolley_autoBuyCoals">自动购买</el-checkbox>
         <el-button type="text" size="mini" @click="buyCoal">购买煤包</el-button>
       </p>
       <div class="operation">
@@ -13,7 +14,7 @@
         </div>
         <el-button @click="configVisible = true" type="text"> 配置 </el-button>
         <el-button
-          @click="queryAssetsByName"
+          @click="init"
           :disabled="loading"
           type="text"
           icon="el-icon-refresh"
@@ -109,7 +110,7 @@ export default {
   watch: {
     gamesConfig: {
       handler() {
-        this.queryAssetsByName();
+        this.init();
       },
       deep: true
     }
@@ -141,8 +142,8 @@ export default {
     },
     // 初始化
     async init() {
-      this.handleSubs.push(this.queryAssetsByName);
-      this.queryAssetsByName();
+      this.handleSubs.push(this.init);
+      this.init();
     },
     /**
      * 购买煤包
@@ -159,7 +160,7 @@ export default {
     /**
      * 查询资源 根据用户
      */
-    async queryAssetsByName() {
+    async init() {
       clearTimeout(this.updateStimeInter);
       await this.getTableData();
       this.updatestime();
@@ -203,7 +204,7 @@ export default {
           this.$set(row, 'nextActionTimeText', actionText);
           // false 建造 true推车
           const type = row.build_counter === row.prop.build_count ? true : false;
-          if (actionZero) {
+          if (actionZero && this.gamesConfig.diggers.trolley_open) {
             // 进行建造
             if (!type) {
               // 获取余额
@@ -222,7 +223,7 @@ export default {
                     ...row,
                     asset_id: this.coals[0].asset_id
                   });
-                } else {
+                } else if (this.gamesConfig.diggers.trolley_autoBuyCoals) {
                   this.setRunData(mines, 'buy', { ...row, template_id: 530552 });
                 }
               }
@@ -234,7 +235,7 @@ export default {
             }
           }
         }
-        if (Object.keys(mines).length && this.gamesConfig.diggers.trolley_open) {
+        if (Object.keys(mines).length) {
           sendMessage({
             type: 'run',
             data: mines

@@ -35,4 +35,6 @@ const WAX_BASE_URLS = [
   'https://api.wax.bountyblok.io'
 ];
 
-export { GAME_NAME, EOS_BASE_URLS, WAX_BASE_URLS };
+const ASSETS_BASE_URLS = ['https://atomic.wax.eosrio.io', 'https://wax.api.atomicassets.io'];
+
+export { GAME_NAME, EOS_BASE_URLS, WAX_BASE_URLS, ASSETS_BASE_URLS };

@@ -24,7 +24,8 @@ const gamesConfig = Vue.observable({
     tools_betEquip: [], // 使用什么类型的装备
     tools_betRarity: [], // 使用什么稀有度的装备
     trolley_open: true,
-    trolley_isShort: true // fals长期，true短期
+    trolley_isShort: true, // fals长期，true短期
+    trolley_autoBuyCoals: false, // 是否自动购买煤炭
   },
   fishing: {
     tools_open: true,

@@ -1,6 +1,6 @@
 import { obser } from '@/store/light';
 import { getBalancesObj } from '@/utils/util';
-import { getAsset } from '@/wax/atom_asset';
+import { getAsset, getAssetByMarket } from '@/wax/atom_asset';
 import { GetWaxTableRows } from '@/wax/table_row';
 import { getZh } from '../config/constant';
 
@@ -119,17 +119,17 @@ export async function GetAllRushConfig() {
  * 获取背包的煤炭
  */
 export async function getBagCoals() {
-  const { waxname } = obser;
+  const { owner } = obser;
   return getAsset({
     page: 1,
     limit: 100,
-    owner: waxname,
     collection_name: 'diggersworld',
-    schema_name: 'bags'
+    owner,
+    template_id: '530552'
   }).then(async (res) => {
     if (res.success) {
-      return res.data.filter((v) => Number(v.template.template_id) === 530552);
+      return res.data;
     }
-    return await getBagCoals();
+    return [];
   });
 }

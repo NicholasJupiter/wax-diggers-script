@@ -12,10 +12,9 @@ export function getAsset(params) {
   });
 }
 
-
 // 获取market的东西
-export function getAssetByMarket () {
-  return axios.get('atomicmarket/v1/assets', {
-    params: params
+export function getAssetByMarket(data) {
+  return axios.post('atomicmarket/v1/assets', {
+    ...data
   });
 }

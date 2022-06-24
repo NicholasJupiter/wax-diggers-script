@@ -70,8 +70,8 @@ export default {
     });
     this.obser.owner = this.$route.query.waxname;
     if (!this.obser.gamename) {
-      // location.href += '?waxname=j4vym.wam&gamename=diggerswgame';
-      location.href += '?waxname=j4vym.wam&gamename=galacticgame';
+      location.href += '?waxname=j4vym.wam&gamename=diggerswgame';
+      // location.href += '?waxname=j4vym.wam&gamename=galacticgame';
       // location.href += '?waxname=j4vym.wam&gamename=fishinglgame';
 
       location.reload();
