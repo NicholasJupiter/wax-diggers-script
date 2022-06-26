@@ -1,6 +1,7 @@
 import axios from '@/http/wax.js';
-import AtomAxios from '@/http/atom.js';
+// import AtomAxios from '@/http/atom.js';
 import { obser } from '@/store/light';
+import { getBalancesObj } from '@/utils/util';
 /**
  * 获取wax table_row资源
  * @param {object} rowData
@@ -32,15 +33,22 @@ export async function GetWaxTableRows(rowData) {
  * @param {array} currencys
  * @returns
  */
-export async function GetWalletBalances(currencys = []) {
+export async function GetWalletBalances(currencys = [], code) {
   const { owner } = obser;
-  const walletRet = await AtomAxios.get(
-    'https://lightapi.eosamsterdam.net/api/balances/wax/' + owner
-  );
-  return currencys.reduce((ret, currency) => {
-    ret[currency] = walletRet.balances.find((v) => v.currency === currency)?.amount || 0;
-    return ret;
-  }, {});
+  const all = currencys.map((currency) => {
+    return axios.post('/v1/chain/get_currency_balance', {
+      code,
+      account: owner,
+      symbol: currency
+    });
+  });
+  const ret = await Promise.all(all);
+  const balances = ret.map((v) => v[0]);
+  return getBalancesObj(balances);
+  // return currencys.reduce((ret, currency) => {
+  //   ret[currency] = walletRet.balances.find((v) => v.currency === currency)?.amount || 0;
+  //   return ret;
+  // }, {});
 }
 
 /**

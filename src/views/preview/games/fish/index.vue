@@ -42,7 +42,7 @@ export default {
     async _getUserBalances() {
       const ret = [];
       const balances = await getUserBalances();
-      const walletBalances = await GetWalletBalances(Object.keys(COINS));
+      const walletBalances = await GetWalletBalances(Object.keys(COINS), 'fishingcoins');
       Object.keys(COINS).forEach((key) => {
         ret.push({
           token: walletBalances[key] || 0,

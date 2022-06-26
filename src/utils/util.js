@@ -40,7 +40,7 @@ export function getBalancesObj(balances = []) {
     const ret = {};
     balances.forEach((v) => {
       const [amount, currency] = v.split(' ');
-      ret[currency] = Number(amount);
+      ret[currency] = Number(amount).toFixed(4);
     });
     return ret;
   }

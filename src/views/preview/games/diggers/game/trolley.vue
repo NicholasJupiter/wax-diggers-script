@@ -13,12 +13,7 @@
           <el-switch v-model="gamesConfig.diggers.trolley_open" />
         </div>
         <el-button @click="configVisible = true" type="text"> 配置 </el-button>
-        <el-button
-          @click="init"
-          :disabled="loading"
-          type="text"
-          icon="el-icon-refresh"
-        >
+        <el-button @click="init" :disabled="loading" type="text" icon="el-icon-refresh">
           刷新数据
         </el-button>
       </div>
@@ -105,6 +100,7 @@ export default {
     };
   },
   created() {
+    this.handleSubs.push(this.init);
     this.init();
   },
   watch: {
@@ -140,11 +136,6 @@ export default {
         data: { unstake: [row] }
       });
     },
-    // 初始化
-    async init() {
-      this.handleSubs.push(this.init);
-      this.init();
-    },
     /**
      * 购买煤包
      */
@@ -162,9 +153,9 @@ export default {
      */
     async init() {
       clearTimeout(this.updateStimeInter);
+      this.coals = await getBagCoals();
       await this.getTableData();
       this.updatestime();
-      this.coals = await getBagCoals();
     },
     /**
      * 获取工具, 用来显示
@@ -217,11 +208,11 @@ export default {
               if (row.__max_push_conter === row.push_counter) {
                 this.setRunData(mines, 'claimjourney', { ...row });
               } else {
-                this.coals = await getBagCoals();
                 if (this.coals.length) {
+                  const coal = this.coals.pop();
                   this.setRunData(mines, 'pushTrolley', {
                     ...row,
-                    asset_id: this.coals[0].asset_id
+                    asset_id: coal.asset_id
                   });
                 } else if (this.gamesConfig.diggers.trolley_autoBuyCoals) {
                   this.setRunData(mines, 'buy', { ...row, template_id: 530552 });
